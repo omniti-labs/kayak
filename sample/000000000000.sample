@@ -1,0 +1,7 @@
+BuildRpool c0d0
+SetHostname instalz
+SetTimezone US/Eastern
+UseDNS 4.2.2.1 office.omniti.com
+Postboot '/sbin/ipadm create-if e1000g0'
+Postboot '/sbin/ipadm create-addr -T dhcp e1000g0/v4'
+NO_REBOOT=1
