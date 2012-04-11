@@ -2,5 +2,5 @@ default=0
 timeout=1
 min_mem64 1024
 title OmniOS Install
-	kernel$ /boot/platform/i86pc/kernel/$ISADIR/unix -B install_media=http://10.0.2.2/kayak/r151002.zfs.bz2,install_config=http://10.0.2.2/kayak
+	kernel$ /boot/platform/i86pc/kernel/$ISADIR/unix -B install_media=http:///kayak/@VERSION@.zfs.bz2,install_config=http:///kayak
 	module$ /omnios/kayak/miniroot.gz

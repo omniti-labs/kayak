@@ -20,6 +20,7 @@ OutputLog(){
   fi
 }
 log() {
+  OutputLog
   TS=`date +%Y/%m/%d-%H:%M:%S`
   echo "[$TS] $*" 1>&4
   echo "[$TS] $*"
@@ -55,10 +56,18 @@ SetRootPW(){
 ForceDHCP(){
   /sbin/ifconfig -a plumb 2> /dev/null
   /sbin/ifconfig -a dhcp
+  while [[ -z $(/sbin/dhcpinfo BootSrvA) ]]; do
+    log "Waiting for dhcpinfo..."
+    sleep 1
+  done
+  BOOTSRVA=`/sbin/dhcpinfo BootSrvA`
+  log "Next server: $BOOTSRVA"
 }
 
 BuildBE() {
+  BOOTSRVA=`/sbin/dhcpinfo BootSrvA`
   MEDIA=`getvar install_media`
+  MEDIA=`echo $MEDIA | sed -e "s%///%//$BOOTSRVA/%g;"`
   zfs set compression=on rpool
   zfs create rpool/ROOT
   zfs set canmount=off rpool/ROOT
@@ -81,7 +90,9 @@ BuildBE() {
 
 FetchConfig(){
   ETHER=`Ether`
+  BOOTSRVA=`/sbin/dhcpinfo BootSrvA`
   CONFIG=`getvar install_config`
+  CONFIG=`echo $CONFIG | sed -e "s%///%//$BOOTSRVA/%g;"`
   L=${#ETHER}
   while [[ "$L" -gt "0" ]]; do
     URL="$CONFIG/${ETHER:0:$L}"
@@ -160,5 +171,6 @@ RunInstall(){
   Postboot 'exit $SMF_EXIT_OK'
   ApplyChanges || bomb "Could not apply all configuration changes"
   MakeBootable || bomb "Could not make new BE bootable"
+  log "Install complete"
   return 0
 }
