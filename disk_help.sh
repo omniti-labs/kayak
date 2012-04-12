@@ -96,3 +96,65 @@ BuildRpool() {
   zpool create -f rpool $ztype $ztgt || bomb "Failed to create rpool"
   BuildBE
 }
+GetTargetVolSize() {
+    # Aim for 25% of physical memory (minimum 1G)
+    # This is always in megabytes
+    local mem=`/usr/sbin/prtconf | /bin/awk '/^Memory size/ { print $3 }'`
+    if [[ $mem -lt 4096 ]]; then
+        local volsize=1
+    else
+        local quart=`echo "scale=1;$MEM/4096" | /bin/bc`
+        local vsize=`printf %0.f $quart`
+    fi
+    echo $vsize
+}    
+GetRpoolFree() {
+    local zfsavail=`/sbin/zfs list -H -o avail rpool`
+    if [[ ${zfsavail:(-1)} = "G" ]]; then
+        local avail=`printf %0.f ${zfsavail::-1}`
+    elif [[ ${zfsavail:(-1)} = "T" ]]; then
+        local gigs=`echo "scale=1;${zfsavail::-1}*1024" | /bin/bc`
+        avail=`printf %0.f $gigs`
+    else
+        # If we get here, there's too little space left to be usable
+        avail=0
+    fi
+    echo $avail
+}
+MakeSwapDump() {
+    local size=`GetTargetVolSize`
+    local totalvols=""
+    local usable=""
+    local finalsize=""
+    local savecore=""
+
+    # We're creating both swap and dump volumes of the same size
+    let totalvols=${size}*2
+
+    # We want at least 10GB left free after swap/dump
+    # If we can't make swap/dump at least 1G each, don't bother
+    let usable=`GetRpoolFree`-10
+    if [[ $usable -lt 2 ]]; then
+        log "Not enough free space for reasonably-sized swap and dump; not creating either."
+        return 0
+    fi
+
+    # If the total of swap and dump is greater than the usable free space,
+    # make swap and dump each take half but don't enable savecore
+    if [[ $totalvols -ge $usable ]];
+        let finalsize=${usable}/2
+        savecore="-n"
+    else
+        finalsize=$size
+        savecore="-y"
+    fi
+
+    for volname in swap dump; do
+        /sbin/zfs create -V ${finalsize}G rpool/$volname || \
+            bomb "Failed to create rpool/$volname"
+    done
+    printf "/dev/zvol/dsk/rpool/swap\t-\t-\tswap\t-\tno\t-\n" >> $ALTROOT/etc/vfstab
+    /usr/sbin/dumpadm $savecore -d /dev/zvol/dsk/rpool/dump -r $ALTROOT || \
+        log "Failed to properly configure crash dumps. You should have a look at 'dumpadm' after reboot."
+    return 0
+}
