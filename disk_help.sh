@@ -98,12 +98,12 @@ BuildRpool() {
 }
 GetTargetVolSize() {
     # Aim for 25% of physical memory (minimum 1G)
-    # This is always in megabytes
+    # prtconf always reports in megabytes
     local mem=`/usr/sbin/prtconf | /bin/awk '/^Memory size/ { print $3 }'`
     if [[ $mem -lt 4096 ]]; then
         local volsize=1
     else
-        local quart=`echo "scale=1;$MEM/4096" | /bin/bc`
+        local quart=`echo "scale=1;$mem/4096" | /bin/bc`
         local vsize=`printf %0.f $quart`
     fi
     echo $vsize
