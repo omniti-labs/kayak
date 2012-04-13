@@ -1,0 +1,17 @@
+0 /usr/sbin/reboot
+0 /usr/bin/cp
+0 /usr/bin/mv
+0 /usr/bin/wc
+0 /usr/bin/uniq
+0 /usr/bin/sort
+0 /usr/bin/bc
+0 /usr/sbin/prtconf
+0 /usr/sbin/swap
+0 /usr/sbin/disks
+0 /usr/sbin/amd64/swap
+0 /lib/fm/amd64/libfmevent.so.1
+0 /lib/fm/libfmevent.so.1
+0 /lib/libcontract.so
+0 /usr/lib/libinstzones.so.1
+0 /usr/lib/libl.so.1
+0 /usr/sbin/svccfg

@@ -1,0 +1,8 @@
+forceload: drv/systrace
+forceload: drv/sdt
+forceload: drv/profile
+forceload: drv/lockstat
+forceload: drv/fbt
+forceload: drv/fasttrap
+forceload: drv/dcpc
+forceload: drv/dtrace

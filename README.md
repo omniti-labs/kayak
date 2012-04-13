@@ -4,11 +4,8 @@ Using Kayak
 Building
 --------
 
- * build_image.sh will build the miniroot.gz file to be placed on the TFTP
-   server
- * build_zfs_send.sh will build the system install image to be accessible
-   via HTTP
-
+ * zfs create rpool/kayak_image
+ * gmake BUILDSEND=rpool/kayak_image
 
 Operation
 ---------

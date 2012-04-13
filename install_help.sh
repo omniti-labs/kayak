@@ -4,9 +4,10 @@ LOG_SETUP=0
 
 ConsoleLog(){
   exec 4>/dev/console
-  exec 1>${1}
-  exec 2>${1}
+  exec 1>>${1}
+  exec 2>>${1}
   INSTALL_LOG=${1}
+  LOG_SETUP=1
 }
 CopyInstallLog(){
   if [[ -n "$INSTALL_LOG" ]]; then
@@ -15,7 +16,7 @@ CopyInstallLog(){
 }
 OutputLog(){
   if [[ "$LOG_SETUP" -eq "0" ]]; then
-    open 4>/dev/null
+    exec 4>/dev/null
     LOG_SETUP=1
   fi
 }
@@ -67,6 +68,7 @@ ForceDHCP(){
 BuildBE() {
   BOOTSRVA=`/sbin/dhcpinfo BootSrvA`
   MEDIA=`getvar install_media`
+  MEDIA=`echo $MEDIA | sed -e "s%//\:%//$BOOTSRVA\:%g;"`
   MEDIA=`echo $MEDIA | sed -e "s%///%//$BOOTSRVA/%g;"`
   zfs set compression=on rpool
   zfs create rpool/ROOT
@@ -92,6 +94,7 @@ FetchConfig(){
   ETHER=`Ether`
   BOOTSRVA=`/sbin/dhcpinfo BootSrvA`
   CONFIG=`getvar install_config`
+  CONFIG=`echo $CONFIG | sed -e "s%//\:%//$BOOTSRVA\:%g;"`
   CONFIG=`echo $CONFIG | sed -e "s%///%//$BOOTSRVA/%g;"`
   L=${#ETHER}
   while [[ "$L" -gt "0" ]]; do
@@ -160,6 +163,11 @@ Postboot() {
 }
 
 Reboot() {
+  # This is an awful hack... we already setup bootadm
+  # and we've likely deleted enough of the userspace that this
+  # can't run successfully... The easiest way to skip it is to
+  # remove the binary
+  rm -f /sbin/bootadm
   svccfg -s "system/boot-config:default" setprop config/fastreboot_default=false
   svcadm refresh svc:/system/boot-config:default
   reboot

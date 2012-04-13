@@ -2,7 +2,7 @@
 
 fail() {
   echo $*
-  exit
+  exit 1
 }
 
 ZROOT=rpool
@@ -25,7 +25,7 @@ fi
 
 MPR=`zfs get -H mountpoint $ZROOT | awk '{print $3}'`
 if [[ -z "$OUT" ]]; then
-  OUT=$MPR/$name.zfs.bz2
+  OUT=$MPR/kayak_$name.zfs.bz2
 fi
 
 zfs create $ZROOT/$name || fail "zfs create"
@@ -35,3 +35,5 @@ pkg image-create -F -a omnios=http://pkg.omniti.com/omnios/release $MP || fail "
 pkg -R $MP install entire || fail "install entire"
 zfs snapshot $ZROOT/$name@kayak || fail "snap"
 zfs send $ZROOT/$name@kayak | bzip2 -9 > $OUT || fail "send/compress"
+zfs destroy $ZROOT/$name@kayak || fail "could not remove snapshot"
+zfs destroy $ZROOT/$name || fail "could not remove zfs filesystem"

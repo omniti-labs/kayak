@@ -1,11 +1,28 @@
 #!/bin/bash
 
+fail() {
+	echo "ERROR: $*"
+	exit 1
+}
+
 SRCDIR=$(dirname $0)
+DIDWORK=0
 if [[ ${SRCDIR:0:1} != "/" ]]; then
   SRCDIR=`pwd`/$SRCDIR
 fi
-WORKDIR=/var/tmp/kayak_root
+if [[ -z "${1}" ]]; then
+  echo "$0 <zfs pool> [checkpoint]"
+  exit 1
+else
+  BASE=${1}
+  shift
+  BASEDIR=`zfs get -o value -H mountpoint $BASE`
+fi
+WORKDIR=$BASEDIR
 ROOTDIR=$WORKDIR/root
+if [[ ! -d $ROOTDIR ]]; then
+  zfs create $BASE/root || fail "zfs create failed"
+fi
 SVCCFG_DTD=${ROOTDIR}/usr/share/lib/xml/dtd/service_bundle.dtd.1
 SVCCFG_REPOSITORY=${ROOTDIR}/etc/svc/repository.db
 SVCCFG=/usr/sbin/svccfg
@@ -84,7 +101,7 @@ SYSTEM="system/boot/grub system/boot/real-mode system/boot/wanboot/internal
 	system/prerequisite/gnu system/storage/luxadm
 	system/storage/fibre-channel/port-utility"
 
-DEBUG="developer/debug/mdb"
+#DEBUG="developer/debug/mdb system/dtrace developer/dtrace"
 
 DRIVERS="driver/audio driver/crypto/dca driver/crypto/tpm driver/firewire
 	driver/graphics/agpgart driver/graphics/atiatom driver/graphics/drm
@@ -130,30 +147,51 @@ RMRF="/var/pkg /usr/share/man /usr/lib/python2.6 /usr/lib/iconv"
 ID=`id -u`
 if [[ "$ID" != "0" ]]; then
 	echo "must run as root"
-	exit
+	exit 1
 fi
 
-if [[ -f $WORKDIR/.chkpt ]]; then
-	CHKPT=`cat $WORKDIR/.chkpt`
-fi
+chkpt() {
+	SNAP=`zfs list -H -t snapshot $BASE/root@${1} 2> /dev/null`
+	if [[ "$DIDWORK" -ne "0" ]]; then
+		if [[ -n "$SNAP" ]]; then
+			zfs destroy $BASE/root@${1} || \
+				fail "zfs destroy ${1} failed"
+		fi
+		zfs snapshot $BASE/root@${1} || fail "zfs snapshot failed"
+	fi
+	if [[ "${1}" != "begin" ]]; then
+		echo " === Proceeding to phase $1 (zfs @${1}) ==="
+		zfs rollback -r $BASE/root@${1} || fail "zfs rollback failed"
+	else
+		echo " === Proceeding to phase $1 ==="
+	fi
+	CHKPT=$1
+	DIDWORK=1
+}
+
 if [[ -n "$1" ]]; then
 	echo "Explicit checkpoint requested: '$1'"
-	rm -f $WORKDIR/.chkpt
 	CHKPT=$1
+	chkpt $CHKPT
 fi
 if [[ -z "$CHKPT" ]]; then
 	CHKPT="begin"
 fi
 
-fail() {
-	echo "ERROR: $*"
-	exit
-}
-
-chkpt() {
-	echo " === Proceeding to phase $1 ==="
-	echo "$1" > $WORKDIR/.chkpt	
-	CHKPT=$1
+declare -A keep_list
+load_keep_list() {
+	for datafile in $*
+	do
+		FCNT=0
+		while read file
+		do
+			if [[ -n "$file" ]]; then
+				keep_list+=([$file]="x")
+				FCNT=$(($FCNT + 1))
+			fi
+		done < <(cut -f2- -d/ $datafile)
+		echo " --- keeping $FCNT files from $datafile"
+	done
 }
 
 step() {
@@ -161,13 +199,8 @@ step() {
 	case "$1" in
 
 	"begin")
-
-	if [[ -d $WORKDIR ]]; then
-		echo "tmp workdir already exists, deleting"
-		rm -rf $WORKDIR
-	fi
-	mkdir $WORKDIR || fail "mkdir workdir"
-	mkdir $ROOTDIR || fail "mkdir rootdir"
+	zfs destroy -r $BASE/root 2> /dev/null
+	zfs create $BASE/root || fail "zfs create failed"
 	chkpt pkg
 	;;
 
@@ -185,6 +218,7 @@ step() {
 		awk '{if($3!="/"){print;}}' $WORKDIR/vfstab > $ROOTDIR/etc/vfstab && \
 		echo "/devices/ramdisk:a - / ufs - no nologging" >> $ROOTDIR/etc/vfstab) || \
 		fail "vfstab / updated"
+	rm $WORKDIR/vfstab
 	cp $ROOTDIR/lib/svc/seed/global.db $ROOTDIR/etc/svc/repository.db
 
 	${SVCCFG} import ${ROOTDIR}/lib/svc/manifest/milestone/sysconfig.xml
@@ -206,6 +240,16 @@ step() {
 	;;
 
 	"cull")
+	load_keep_list data/*
+	while read file
+	do
+		if [[ -n "$file" && \
+		      ${keep_list[$file]} == "" && \
+		      -e "$ROOTDIR/$file" && \
+		      ! -d $ROOTDIR/$file ]] ; then
+			rm -f $ROOTDIR/$file
+		fi
+	done < <(cd $ROOTDIR && find ./ | cut -c3-)
 	for pat in $CULL; do
 		pat=`echo $pat | sed -e 's/\//\\\\\//g;'`
 		for pkg in `$PKG -R $ROOTDIR list 2>/dev/null | awk '/'"$pat"'/{print $1;}'`; do
@@ -246,13 +290,17 @@ step() {
 
 	"copy")
 	pushd $ROOTDIR >/dev/null
-	/usr/bin/find . | /usr/bin/cpio -pdum $WORKDIR/mnt > /dev/null || fail "populate root"
+	/usr/bin/find . | /usr/bin/cpio -pdum $WORKDIR/mnt 2> /dev/null > /dev/null || fail "populate root"
 	/usr/sbin/devfsadm -r $WORKDIR/mnt > /dev/null
 	popd >/dev/null
 	mkdir $WORKDIR/mnt/kayak
 	cp $SRCDIR/*.sh $WORKDIR/mnt/kayak/
 	chmod a+x $WORKDIR/mnt/kayak/*.sh
 	make_initial_boot $WORKDIR/mnt/.initialboot
+	if [[ -n "$DEBUG" ]]; then
+		cp $SRCDIR/anon.system $WORKDIR/mnt/etc/system
+		cp $SRCDIR/anon.dtrace.conf $WORKDIR/mnt/kernel/drv/dtrace.conf
+	fi
 	chkpt umount
 	;;
 
