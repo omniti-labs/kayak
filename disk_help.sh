@@ -165,7 +165,7 @@ MakeSwapDump() {
 
     # If the total of swap and dump is greater than the usable free space,
     # make swap and dump each take half but don't enable savecore
-    if [[ $totalvols -ge $usable ]];
+    if [[ $totalvols -ge $usable ]]; then
         let finalsize=${usable}/2
         savecore="-n"
     else
