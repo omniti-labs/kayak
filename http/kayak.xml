@@ -58,7 +58,7 @@
 	<exec_method
 		type='method'
 		name='start'
-		exec='/lib/svc/method/svc-kayak'
+		exec='/lib/svc/method/svc-kayak -u nobody -g nobody'
 		timeout_seconds='60'>
 		<method_context>
 			<method_credential user='root' group='root' />

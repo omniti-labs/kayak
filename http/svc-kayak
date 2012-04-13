@@ -30,6 +30,7 @@ import cherrypy
 import re
 import time
 from cherrypy.process.plugins import DropPrivileges
+from optparse import OptionParser
 
 class Root:
     @cherrypy.expose
@@ -45,28 +46,41 @@ class Root:
                 </html>"""
 
 class KayakLog(object):
-
     exposed = True
+    def __init__(self, options):
+        self.options = options
 
     def PUT(self, macaddr):
         if re.match("^[0-9a-fA-F]{12}$", macaddr) == None:
             raise cherrypy.HTTPError("404 Not Found")
-        log = open('/var/kayak/log/' + macaddr + "." + str(time.time()), 'w')
+        log = open(os.path.join(options.basedir, 'log', macaddr + "." + str(time.time())), 'w')
         log.write(cherrypy.request.body.read())
 
 if __name__ == '__main__':
+    parser = OptionParser(usage="usage: %prog [options]")
+    parser.add_option("-p", type="int", dest="port", default=80,
+                      help="the port on which to listen")
+    parser.add_option("-u", type="string", dest="uid", default=None,
+                      help="a user (or uid) to switch to")
+    parser.add_option("-g", type="string", dest="gid", default=None,
+                      help="a grouo (or gid) to switch to")
+    parser.add_option("-d", type="string", dest="basedir", default="/var/kayak",
+                      help="root of kayak images");
     current_dir = os.path.dirname(os.path.abspath(__file__))
+    (options, args) = parser.parse_args()
     # Set up site-wide config first so we get a log if errors occur.
     cherrypy.config.update({'environment': 'production',
                             'log.screen': True,
                             'server.socket_host': '0.0.0.0',
-                            'server.socket_port': 80,
+                            'server.socket_port': options.port,
                            })
 
     conf = {'/': { 'request.dispatch': cherrypy.dispatch.MethodDispatcher(), },
             '/kayak': {'tools.staticdir.on': True,
-                       'tools.staticdir.dir': '/var/kayak/kayak'}}
+                       'tools.staticdir.dir': os.path.join(options.basedir,'kayak')}}
     root = Root()
-    root.kayaklog = KayakLog()
-    DropPrivileges(cherrypy.engine, uid=60001, gid=60001).subscribe()
+    root.kayaklog = KayakLog(options)
+    if options.uid != None or options.gid != None:
+        DropPrivileges(cherrypy.engine,
+                       uid=options.uid, gid=options.gid).subscribe()
     cherrypy.quickstart(root, '/', config=conf)
