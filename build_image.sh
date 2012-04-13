@@ -42,6 +42,7 @@ else
   shift
   BASEDIR=`zfs get -o value -H mountpoint $BASE`
 fi
+MKFILEDIR=/tmp
 WORKDIR=$BASEDIR
 ROOTDIR=$WORKDIR/root
 if [[ ! -d $ROOTDIR ]]; then
@@ -165,6 +166,7 @@ PARTS="release/name release/notices service/picl install/beadm SUNWcs SUNWcsd
 
 PKGS="$PARTS $SYSTEM $DRIVERS $DEBUG"
 
+BIGROOT=
 CULL="perl python package/pkg snmp"
 RMRF="/var/pkg /usr/share/man /usr/lib/python2.6 /usr/lib/iconv"
 
@@ -264,34 +266,21 @@ step() {
 	;;
 
 	"cull")
-	load_keep_list data/*
-	while read file
-	do
-		if [[ -n "$file" && \
-		      ${keep_list[$file]} == "" && \
-		      -e "$ROOTDIR/$file" && \
-		      ! -d $ROOTDIR/$file ]] ; then
-			rm -f $ROOTDIR/$file
-		fi
-	done < <(cd $ROOTDIR && find ./ | cut -c3-)
-	for pat in $CULL; do
-		pat=`echo $pat | sed -e 's/\//\\\\\//g;'`
-		for pkg in `$PKG -R $ROOTDIR list 2>/dev/null | awk '/'"$pat"'/{print $1;}'`; do
-			echo "   --- culling $pkg"
-			for line in `$PKG contents $pkg 2> /dev/null`
-			do
-				TOT_CNT=$(($TOT_CNT + 1))
-				if [[ -f "${ROOTDIR}/${line}" ]]; then
-					rm -f "${ROOTDIR}/${line}"
-					RM_CNT=$(($RM_CNT + 1))
-				fi
-			done
+	if [[ -z "$BIGROOT" ]]; then
+		load_keep_list data/*
+		while read file
+		do
+			if [[ -n "$file" && \
+			      ${keep_list[$file]} == "" && \
+			      -e "$ROOTDIR/$file" && \
+			      ! -d $ROOTDIR/$file ]] ; then
+				rm -f $ROOTDIR/$file
+			fi
+		done < <(cd $ROOTDIR && find ./ | cut -c3-)
+		for path in $RMRF ; do
+			rm -rf ${ROOTDIR}$path && echo " -- tossing $path"	
 		done
-	done
-	echo "Culled $RM_CNT files ($TOT_CNT attempted)"
-	for path in $RMRF ; do
-		rm -rf ${ROOTDIR}$path && echo " -- tossing $path"	
-	done
+	fi
 
 	chkpt mkfs
 	;;
@@ -299,8 +288,8 @@ step() {
 	"mkfs")
 	size=`/usr/bin/du -ks ${ROOTDIR}|/usr/bin/nawk '{print $1+10240}'`
 	echo " --- making image of size $size"
-	/usr/sbin/mkfile ${size}k $WORKDIR/miniroot || fail "mkfile"
-	lofidev=`/usr/sbin/lofiadm -a $WORKDIR/miniroot`
+	/usr/sbin/mkfile ${size}k $MKFILEDIR/miniroot || fail "mkfile"
+	lofidev=`/usr/sbin/lofiadm -a $MKFILEDIR/miniroot`
 	rlofidev=`echo $lofidev |sed s/lofi/rlofi/`
 	yes | /usr/sbin/newfs -m 0 $rlofidev 2> /dev/null > /dev/null || fail "newfs"
 	chkpt mount
@@ -330,12 +319,13 @@ step() {
 
 	"umount")
 	/usr/sbin/umount $WORKDIR/mnt || fail "umount"
-	/usr/sbin/lofiadm -d $WORKDIR/miniroot || fail "lofiadm delete"
+	/usr/sbin/lofiadm -d $MKFILEDIR/miniroot || fail "lofiadm delete"
 	chkpt compress
 	;;
 
 	"compress")
-	gzip -f $WORKDIR/miniroot
+	gzip -c -f $MKFILEDIR/miniroot > $WORKDIR/miniroot.gz
+	rm -f $MKFILEDIR/miniroot
 	chmod 644 $WORKDIR/miniroot.gz
 	echo " === Finished ==="
 	ls -l $WORKDIR/miniroot.gz

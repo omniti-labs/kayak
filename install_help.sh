@@ -83,6 +83,7 @@ SetRootPW(){
   sed -i -e 's%^root::%root:'$ROOTPW':%' $ALTROOT/etc/shadow
 }
 ForceDHCP(){
+  log "Forcing all interfaces into DHCP..."
   /sbin/ifconfig -a plumb 2> /dev/null
   /sbin/ifconfig -a dhcp
   while [[ -z $(/sbin/dhcpinfo BootSrvA) ]]; do
