@@ -87,6 +87,7 @@ BuildBE() {
   /usr/sbin/devfsadm -r /mnt
   [[ -L $ALTROOT/dev/msglog ]] || \
     ln -s ../devices/pseudo/sysmsg@0:msglog $ALTROOT/dev/msglog
+  MakeSwapDump
   zfs destroy omnios@kayak
 }
 
