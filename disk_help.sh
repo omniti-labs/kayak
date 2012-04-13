@@ -178,7 +178,6 @@ MakeSwapDump() {
             bomb "Failed to create rpool/$volname"
     done
     printf "/dev/zvol/dsk/rpool/swap\t-\t-\tswap\t-\tno\t-\n" >> $ALTROOT/etc/vfstab
-    /usr/sbin/dumpadm $savecore -d /dev/zvol/dsk/rpool/dump -r $ALTROOT || \
-        log "Failed to properly configure crash dumps. You should have a look at 'dumpadm' after reboot."
+    Postboot /usr/sbin/dumpadm $savecore -d /dev/zvol/dsk/rpool/dump
     return 0
 }
