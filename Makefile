@@ -40,7 +40,7 @@ INSTALLS=anon.dtrace.conf anon.system build_image.sh build_zfs_send.sh \
 
 TFTP_FILES=$(DESTDIR)/tftpboot/boot/platform/i86pc/kernel/amd64/unix \
 	$(DESTDIR)/tftpboot/kayak/miniroot.gz \
-	$(DESTDIR)/tftpboot/menu.lst \
+	$(DESTDIR)/tftpboot/boot/grub/menu.lst \
 	$(DESTDIR)/tftpboot/pxegrub
 
 WEB_FILES=$(DESTDIR)/var/kayak/kayak/$(VERSION).zfs.bz2
@@ -60,8 +60,8 @@ $(BUILDSEND_MP)/kayak_$(VERSION).zfs.bz2:	build_zfs_send.sh
 $(DESTDIR)/tftpboot/pxegrub:	/boot/grub/pxegrub
 	cp -p $< $@
 
-$(DESTDIR)/tftpboot/menu.lst:	sample/menu.lst.000000000000
-	cp -p $< $@
+$(DESTDIR)/tftpboot/boot/grub/menu.lst:	sample/menu.lst.000000000000
+	sed -e 's/@VERSION@/$(VERSION)/' $< > $@
 
 $(DESTDIR)/tftpboot/boot/platform/i86pc/kernel/amd64/unix:	/platform/i86pc/kernel/amd64/unix
 	cp -p $< $@
