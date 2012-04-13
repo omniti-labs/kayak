@@ -6,10 +6,13 @@
 0 /usr/bin/sort
 0 /usr/bin/bc
 0 /usr/bin/dc
+0 /usr/bin/sleep
 0 /usr/sbin/prtconf
 0 /usr/sbin/swap
 0 /usr/sbin/disks
 0 /usr/sbin/amd64/swap
+0 /usr/sbin/amd64/modinfo
+0 /usr/sbin/amd64/modload
 0 /lib/fm/amd64/libfmevent.so.1
 0 /lib/fm/libfmevent.so.1
 0 /lib/libcontract.so

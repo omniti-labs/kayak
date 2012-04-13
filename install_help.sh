@@ -39,7 +39,8 @@ CopyInstallLog(){
   fi
 }
 SendInstallLog(){
-  PUTURL=`echo $CONFIG | sed -e "s%/kayak/%/kayaklog/%g;"`
+  PUTURL=`echo $CONFIG | sed -e 's%/kayak/%/kayaklog/%g;'`
+  PUTURL=`echo $PUTURL | sed -e 's%/kayak$%/kayaklog%g;'`
   curl -T $INSTALL_LOG $PUTURL/$ETHER
 }
 OutputLog(){
@@ -85,13 +86,17 @@ SetRootPW(){
 ForceDHCP(){
   log "Forcing all interfaces into DHCP..."
   /sbin/ifconfig -a plumb 2> /dev/null
-  /sbin/ifconfig -a dhcp
+  # for the logs
+  for iface in `/sbin/dladm show-phys -o device -p` ; do
+    /sbin/ifconfig $iface dhcp &
+  done
   while [[ -z $(/sbin/dhcpinfo BootSrvA) ]]; do
     log "Waiting for dhcpinfo..."
     sleep 1
   done
   BOOTSRVA=`/sbin/dhcpinfo BootSrvA`
   log "Next server: $BOOTSRVA"
+  sleep 1
 }
 
 BuildBE() {
@@ -160,6 +165,7 @@ MakeBootable(){
   RELEASE=`head -1 $ALTROOT/etc/release | sed -e 's/ *//;'`
   sed -i -e '/BOOTADM/,/BOOTADM/d' /rpool/boot/grub/menu.lst
   sed -i -e "s/^title.*/title $RELEASE/;" /rpool/boot/grub/menu.lst
+  SendInstallLog
   CopyInstallLog
   beadm umount omnios
   return 0
@@ -210,6 +216,5 @@ RunInstall(){
   ApplyChanges || bomb "Could not apply all configuration changes"
   MakeBootable || bomb "Could not make new BE bootable"
   log "Install complete"
-  SendInstallLog
   return 0
 }
