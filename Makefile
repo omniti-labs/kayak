@@ -30,8 +30,7 @@ BUILDSEND=rpool/kayak_image
 
 BUILDSEND_MP=$(shell zfs get -o value -H mountpoint $(BUILDSEND))
 
-all:	$(BUILDSEND_MP)/miniroot.gz $(BUILDSEND_MP)/kayak_$(VERSION).zfs.bz2
-	@ls -l $^
+all:
 
 INSTALLS=anon.dtrace.conf anon.system build_image.sh build_zfs_send.sh \
 	data/access.log data/boot data/etc data/filelist.ramdisk data/kernel \
@@ -85,6 +84,7 @@ install-dirs:
 	mkdir -p $(DESTDIR)/tftpboot/kayak
 	mkdir -p $(DESTDIR)/var/kayak/kayak
 	mkdir -p $(DESTDIR)/usr/share/kayak/data
+	mkdir -p $(DESTDIR)/usr/share/kayak/sample
 	mkdir -p $(DESTDIR)/var/kayak/log
 
 install-package:	install-dirs
@@ -92,7 +92,7 @@ install-package:	install-dirs
 		cp $$file $(DESTDIR)/usr/share/kayak/$$file ; \
 	done
 	cp http/svc-kayak /lib/svc/method/svc-kayak
-	chmod a+x /lib/svc/method/svc-kayakhttp
+	chmod a+x /lib/svc/method/svc-kayak
 	cp http/kayak.xml /lib/svc/manifest/kayak.xml
 
-install:	$(TFTP_FILES) $(WEB_FILES)
+install:	install-dirs $(TFTP_FILES) $(WEB_FILES)
