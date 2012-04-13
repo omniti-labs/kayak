@@ -40,7 +40,7 @@ INSTALLS=anon.dtrace.conf anon.system build_image.sh build_zfs_send.sh \
 	sample/000000000000.sample sample/menu.lst.000000000000
 
 TFTP_FILES=$(DESTDIR)/tftpboot/boot/platform/i86pc/kernel/amd64/unix \
-	$(DESTDIR)/tftpboot/omnios/kayak/miniroot.gz \
+	$(DESTDIR)/tftpboot/kayak/miniroot.gz \
 	$(DESTDIR)/tftpboot/menu.lst \
 	$(DESTDIR)/tftpboot/pxegrub
 
@@ -67,11 +67,18 @@ $(DESTDIR)/tftpboot/menu.lst:	sample/menu.lst.000000000000
 $(DESTDIR)/tftpboot/boot/platform/i86pc/kernel/amd64/unix:	/platform/i86pc/kernel/amd64/unix
 	cp -p $< $@
 
-$(DESTDIR)/tftpboot/omnios/kayak/miniroot.gz:	$(BUILDSEND_MP)/miniroot.gz
+$(DESTDIR)/tftpboot/kayak/miniroot.gz:	$(BUILDSEND_MP)/miniroot.gz
 	cp -p $< $@
 
 $(BUILDSEND_MP)/miniroot.gz:	$(MINIROOT_DEPS)
-	./build_image.sh begin
+	if test -n "`zfs list -H -t snapshot $(BUILDSEND)/root@fixup 2>/dev/null`"; then \
+	  ./build_image.sh $(BUILDSEND) fixup ; \
+	else \
+	  ./build_image.sh $(BUILDSEND) begin ; \
+	fi
+
+$(DESTDIR)/var/kayak/kayak/$(VERSION).zfs.bz2:	$(BUILDSEND_MP)/kayak_$(VERSION).zfs.bz2
+	cp -p $< $@
 
 install-dirs:
 	mkdir -p $(DESTDIR)/tftpboot/boot/platform/i86pc/kernel/amd64
@@ -88,7 +95,4 @@ install-package:	install-dirs
 	chmod a+x /lib/svc/method/svc-kayakhttp
 	cp http/kayak.xml /lib/svc/manifest/kayak.xml
 
-install:	$(TFTP_FILES) $(WEB_FILES) /platform/i86pc/kernel/amd64/unix
-	cp -p /platform/i86pc/kernel/amd64/unix $(DESTDIR)/tftpboot/boot/platform/i86pc/kernel/amd64/unix
-	cp -p sample/menu.lst.000000000000 $(DESTDIR)/tftpboot/menu.lst
-	cp -p $(WEB_FILES) $(DESTDIR)/var/kayak/kayak/
+install:	$(TFTP_FILES) $(WEB_FILES)
