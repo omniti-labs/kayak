@@ -30,25 +30,63 @@ import cherrypy
 import re
 import time
 from cherrypy.process.plugins import DropPrivileges
+from cherrypy.lib.static import serve_file
 from optparse import OptionParser
 
 class Root:
-    @cherrypy.expose
-    def index(self):
-        return """<html>
+    exposed = True
+    def __init__(self, options):
+        self.options = options
+
+    def GET(self):
+        cherrypy.response.headers['Content-Type'] = 'text/html'
+        head = """<html>
                 <head>
                     <title>Minimal Kayak Install Server</title>
                 </head>
                 <html>
                 <body>
                 <h1>Minimal Kayak Install Server</h1>
-                </body>
+                <div class="images"><h2>Available Images</h2><ul>"""
+        for dirname, dirnames, filenames in os.walk(os.path.join(options.basedir, 'kayak')):
+            for filename in filenames:
+                imagename = re.search("^(.+)\.zfs\.bz2", filename)
+                if imagename != None:
+	            head = head + '<li><a href="kayak/' + filename + '">' + imagename.group(1) + '</a></li>';
+        head = head + '</ul></div><div class="configs"><h2>Available Configs</h2><ul>'
+        configs = []
+        for dirname, dirnames, filenames in os.walk(os.path.join(options.basedir, 'kayak')):
+            for filename in filenames:
+                imagename = re.search("^[0-9a-fA-F]+$", filename)
+                if imagename != None:
+                    configs.append(filename)
+        for filename in configs:
+	    head = head + '<li><a href="kayak/' + filename + '">' + filename + '</a></li>';
+        head = head + '</ul></div><div class="logs"><h2>Install Logs</h2><ul>'
+        logs = []
+        for dirname, dirnames, filenames in os.walk(os.path.join(options.basedir, 'log')):
+            for filename in filenames:
+                logs.append(filename)
+        for filename in sorted(logs):
+            parted = re.match('^([0-9A-Fa-f]{12})\.(\d+)', filename)
+            if parted != None:
+	        head = head + '<li><a href="kayaklog/' + filename + '">' + re.sub('(..)(?=.)', '\\1:', parted.group(1)) + ' [' + time.asctime(time.localtime(float(parted.group(2)))) + ']</a></li>';
+        head = head + "</ul></div>"
+        tail = """<div class="footer">Copyright 2012, OmniTI Computer Consulting, Inc. All rights reserved.</div></body>
                 </html>"""
+        return head + tail
+
 
 class KayakLog(object):
     exposed = True
     def __init__(self, options):
         self.options = options
+
+    def GET(self, file):
+	if re.match("\.\.", file) != None:
+            raise cherrypy.HTTPError("404 Not Found")
+        return serve_file(os.path.join(options.basedir, 'log', file),
+                          content_type='text/plain')
 
     def PUT(self, macaddr):
         if re.match("^[0-9a-fA-F]{12}$", macaddr) == None:
@@ -78,7 +116,7 @@ if __name__ == '__main__':
     conf = {'/': { 'request.dispatch': cherrypy.dispatch.MethodDispatcher(), },
             '/kayak': {'tools.staticdir.on': True,
                        'tools.staticdir.dir': os.path.join(options.basedir,'kayak')}}
-    root = Root()
+    root = Root(options)
     root.kayaklog = KayakLog(options)
     if options.uid != None or options.gid != None:
         DropPrivileges(cherrypy.engine,
