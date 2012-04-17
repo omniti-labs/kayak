@@ -1,0 +1,275 @@
+/*OmniOS Landing Page April 13, 2012*/
+
+/*NEW or ADJUSTED April 17, 2012*/
+
+
+/*STRUCTURE*/
+
+#landing {
+padding-top: 95px;
+margin: -80px auto 0;
+background-image: url(../img/tail_bg.png);
+background-repeat: no-repeat;
+width: 1000px;
+min-height:1200px;
+font: normal 1em/2em Helvetica,Arial,sans-serif;
+text-align:left;
+color: #444;
+}
+
+			/*NEW or ADJUSTED*******/
+#kayak {
+padding-top: 95px;
+margin: -10px auto 0;
+background-image: url(../img/tail_bg_v1.png);	/*Background without top tail is tail_bg_v2.png */
+background-repeat: no-repeat;
+width: 1000px;
+min-height:1200px;
+font: normal 1em/2em Helvetica,Arial,sans-serif;
+text-align:left;
+color: #444;
+}
+
+h1 {
+font: italic 30px Georgia, serif;
+text-align:right;
+color: #777;
+text-shadow: -1px 2px 2px rgba(175, 90, 0, 0.2);
+padding:50px 0 25px 55px;
+background: transparent;
+}
+
+			/*NEW or ADJUSTED*******/
+#kayak #col_b h1{
+font: normal 30px Helvetica,Arial,sans-serif;
+font-size: 25px;
+text-align:left;
+color: #666;
+letter-spacing: .03em;
+padding:8px 0 0 0;
+}
+
+h2 { 
+font: italic 1.3em/1.4em Georgia,serif; 
+text-align: left;
+letter-spacing: .03em;
+color: #b15800;	
+padding-top: 20px;
+}
+
+#col_a{
+float: left;
+width: 480px;
+padding-left: 55px;
+}
+
+			/*NEW or ADJUSTED*******/
+#kayak #col_a{
+float: left;
+width: 238px;
+padding-left: 55px;
+}
+
+#col_b{
+margin-top: 55px;
+float: left;
+width: 360px;
+min-height: 780px;
+background-image: url(../img/corner.png);
+background-repeat: no-repeat;
+padding: 12px 0 0 55px;
+}
+
+			/*NEW or ADJUSTED*******/
+#kayak #col_b{
+margin: 0 0 0 20px;
+float: left;
+width: 610px;
+min-height: 780px;
+background-image: url(../img/corner.png);
+background-repeat: no-repeat;
+padding: 12px 0 0 55px;
+}
+
+.footer {
+text-align: center;
+font: normal 0.8em Helvetica;
+color: #888;
+}
+
+.clearfix:after {
+clear:both;
+display: block;
+float: none;
+width: 100%;
+height: 0;
+overflow: hidden;
+content:"";
+}
+
+/*ELEMENTS*/
+
+/*default links*/
+
+a {text-decoration: none;}
+
+a:link, a:active {
+color: #ffab1d;
+}
+
+#kayak a {
+color: #666;
+}
+
+a:visited {
+color: #e88800;
+/*color: #dd5e09;*/
+}
+
+#kayak a:visited {
+color: #e88800;
+/*color: #dd5e09;*/
+}
+
+a:hover {
+color: #ffab1d;
+}
+/*end default links*/
+
+ul {
+font-size: 16px;
+line-height: 1;
+color: #666666;
+list-style-image: url(../img/bullet_gray.png);
+list-style-position: outside;
+}
+
+#col_b li {
+padding-bottom: 2px;
+}
+
+.bullet_links ul {
+margin-left: 230px;
+font-style:normal;
+font-size: 16px;
+color: #dd5e09;
+list-style-image: url(../img/bullet_orange.png);
+list-style-position: outside;
+padding-top: 10px;
+}
+
+.bullet_links ul li {
+padding-bottom: 15px;
+}
+
+#logo {
+background-image: url(../img/OmniOS_logo.png);
+width: 450px;
+height: 275px;
+}
+
+
+			/*NEW or ADJUSTED*******/
+#logo_medium {
+background-image: url(../img/OmniOS_logo_medium.png);
+background-repeat: no-repeat;
+background-position: left;
+width: 450px;
+height: 275px;
+margin: -115px 8px 0 -45px;
+}
+
+#bttn_big:link,
+#bttn_big:visited,
+#bttn_big:active {
+margin-top: -65px;
+background-image: url(../img/button_gitbg.png);
+width:205px;
+height:35px;
+border: 3px solid #e88800;
+border-top-color: #ffab1d;
+border-bottom-color: #b85400;
+font: normal 21px 'Helvetica Neue',Arial,sans-serif;
+text-shadow: -2px 2px 2px rgba(175, 90, 0, 0.8);
+letter-spacing: .075em;
+text-align: center;
+color: #FFFFFF;
+padding-top: 15px;
+padding-right: 30px;
+display: block;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+border-radius: 5px; /* future proofing */
+-khtml-border-radius: 5px; /* for old Konqueror browsers */
+-ms-border-radius: 5px;
+}
+
+#bttn_big:hover {
+color: #fbfbee;
+border: 3px solid #ffab1d;
+border-top-color: #ffcc99;
+border-bottom-color: #ffab1d;
+background-image: url(../img/buttonovr_gitbg.png);
+}
+
+#bttn_big span{
+font: normal 21px 'Helvetica Neue',Arial,sans-serif;
+letter-spacing: .075em;
+}
+
+.arrow-down {
+margin-left: 178px;
+width: 0;
+height: 0;
+border-left: 15px solid transparent;
+border-right: 15px solid transparent;
+border-top: 20px solid #fff;
+display:inline;
+}
+
+.intro {
+font-weight:700;
+}
+ 
+.widea {
+width: 410px;
+margin-left:-15px;
+}
+
+.callouta {
+font-family:Georgia,serif; 
+font-style: italic; 
+text-align: right;
+font-size: 19px;
+color: #b85400;
+}
+
+.calloutb {
+font: italic 20px/23px Georgia,serif; 
+font-weight: 100;
+text-align: right;
+letter-spacing: .03em;
+color: #555555;
+padding-top: 25px;
+}
+
+
+/* colors
+
+#fbfbee off white
+
+b85400 seinna
+
+b15800 tan
+
+e88800 orange
+
+ffab1d yellow
+
+4e5e5c metal gray
+
+1c2b2b black teal
+
+284848 teal
+
+

@@ -43,9 +43,15 @@ class Root:
         head = """<html>
                 <head>
                     <title>Minimal Kayak Install Server</title>
+                    <link rel="stylesheet" href="css/land.css" type="text/css">
                 </head>
                 <html>
                 <body>
+                <div id="kayak" class="clearfix">
+                    <div id="col_a">
+                        <div id="logo_medium"></div>    
+                    </div>
+                <div id="col_b">
                 <h1>Minimal Kayak Install Server</h1>
                 <div class="images"><h2>Available Images</h2><ul>"""
         for dirname, dirnames, filenames in os.walk(os.path.join(options.basedir, 'kayak')):
@@ -72,7 +78,8 @@ class Root:
             if parted != None:
 	        head = head + '<li><a href="kayaklog/' + filename + '">' + re.sub('(..)(?=.)', '\\1:', parted.group(1)) + ' [' + time.asctime(time.localtime(float(parted.group(2)))) + ']</a></li>';
         head = head + "</ul></div>"
-        tail = """<div class="footer">Copyright 2012, OmniTI Computer Consulting, Inc. All rights reserved.</div></body>
+        tail = """</div><div class="footer">Copyright 2012, OmniTI Computer Consulting, Inc. All rights reserved.</div>
+                </body>
                 </html>"""
         return head + tail
 
@@ -114,6 +121,10 @@ if __name__ == '__main__':
                            })
 
     conf = {'/': { 'request.dispatch': cherrypy.dispatch.MethodDispatcher(), },
+            '/css': {'tools.staticdir.on': True,
+                     'tools.staticdir.dir': os.path.join(options.basedir,'css')},
+            '/img': {'tools.staticdir.on': True,
+                     'tools.staticdir.dir': os.path.join(options.basedir,'img')},
             '/kayak': {'tools.staticdir.on': True,
                        'tools.staticdir.dir': os.path.join(options.basedir,'kayak')}}
     root = Root(options)

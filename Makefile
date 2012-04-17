@@ -44,6 +44,7 @@ TFTP_FILES=$(DESTDIR)/tftpboot/boot/platform/i86pc/kernel/amd64/unix \
 	$(DESTDIR)/tftpboot/pxegrub
 
 WEB_FILES=$(DESTDIR)/var/kayak/kayak/$(VERSION).zfs.bz2
+IMG_FILES=corner.png tail_bg_v1.png OmniOS_logo_medium.png tail_bg_v2.png
 
 anon.dtrace.conf:
 	dtrace -A -q -n'int seen[string]; fsinfo:::/substr(args[0]->fi_pathname,0,1)=="/" && seen[args[0]->fi_pathname]==0/{printf("%d %s %s\n",timestamp/1000000, args[0]->fi_pathname, args[0]->fi_mount);seen[args[0]->fi_pathname]=1;}' -o $@.tmp
@@ -83,6 +84,8 @@ install-dirs:
 	mkdir -p $(DESTDIR)/tftpboot/boot/platform/i86pc/kernel/amd64
 	mkdir -p $(DESTDIR)/tftpboot/kayak
 	mkdir -p $(DESTDIR)/var/kayak/kayak
+	mkdir -p $(DESTDIR)/var/kayak/css
+	mkdir -p $(DESTDIR)/var/kayak/img
 	mkdir -p $(DESTDIR)/usr/share/kayak/data
 	mkdir -p $(DESTDIR)/usr/share/kayak/sample
 	mkdir -p $(DESTDIR)/var/kayak/log
@@ -93,6 +96,10 @@ install-package:	install-dirs
 	done
 	cp http/svc-kayak /lib/svc/method/svc-kayak
 	chmod a+x /lib/svc/method/svc-kayak
+	cp http/css/land.css $(DESTDIR)/var/kayak/css/land.css
+	for file in $(IMG_FILES) ; do \
+		cp http/img/$$file $(DESTDIR)/var/kayak/img/$$file ; \
+	done
 	cp http/kayak.xml /lib/svc/manifest/kayak.xml
 
 install:	install-dirs $(TFTP_FILES) $(WEB_FILES)
