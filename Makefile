@@ -81,6 +81,7 @@ $(DESTDIR)/var/kayak/kayak/$(VERSION).zfs.bz2:	$(BUILDSEND_MP)/kayak_$(VERSION).
 	cp -p $< $@
 
 install-dirs:
+	mkdir -p $(DESTDIR)/tftpboot/boot/grub
 	mkdir -p $(DESTDIR)/tftpboot/boot/platform/i86pc/kernel/amd64
 	mkdir -p $(DESTDIR)/tftpboot/kayak
 	mkdir -p $(DESTDIR)/var/kayak/kayak

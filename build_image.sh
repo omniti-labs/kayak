@@ -46,7 +46,7 @@ MKFILEDIR=/tmp
 WORKDIR=$BASEDIR
 ROOTDIR=$WORKDIR/root
 if [[ ! -d $ROOTDIR ]]; then
-  zfs create $BASE/root || fail "zfs create failed"
+  zfs create -o compression=off $BASE/root || fail "zfs create failed"
 fi
 SVCCFG_DTD=${ROOTDIR}/usr/share/lib/xml/dtd/service_bundle.dtd.1
 SVCCFG_REPOSITORY=${ROOTDIR}/etc/svc/repository.db
@@ -226,7 +226,7 @@ step() {
 
 	"begin")
 	zfs destroy -r $BASE/root 2> /dev/null
-	zfs create $BASE/root || fail "zfs create failed"
+	zfs create -o compression=off $BASE/root || fail "zfs create failed"
 	chkpt pkg
 	;;
 
