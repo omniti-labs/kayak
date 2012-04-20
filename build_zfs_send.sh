@@ -29,21 +29,26 @@ fail() {
   exit 1
 }
 
+PUBLISHER=omnios
+PKGURL=http://pkg.omniti.com/omnios/release
 ZROOT=rpool
 OUT=
-set -- `getopt d:o: $*`
+CLEANUP=0
+set -- `getopt cd:o:p: $*`
 for i in $*
 do
   case $i in
+    -c) CLEANUP=1; shift ;;
     -d) ZROOT=$2; shift 2;;
     -o) OUT=$2; shift 2;;
+    -p) PROFILE=$2; shift 2;;
     --) shift; break ;;
   esac
 done
 
 name=$1
 if [[ -z "$name" ]]; then
-  echo "$0 [-d zfsparent] [-o outputfile] <release_name>"
+  echo "$0 [-d zfsparent] [-p profile] [-o outputfile] <release_name>"
   exit
 fi
 
@@ -52,12 +57,39 @@ if [[ -z "$OUT" ]]; then
   OUT=$MPR/kayak_$name.zfs.bz2
 fi
 
-zfs create $ZROOT/$name || fail "zfs create"
-MP=`zfs get -H mountpoint $ZROOT/$name | awk '{print $3}'`
+if zfs list $ZROOT/$name@entire; then
+  zfs rollback $ZROOT/$name@entire
+  MP=`zfs get -H mountpoint $ZROOT/$name | awk '{print $3}'`
+else
+  zfs create $ZROOT/$name || fail "zfs create"
+  MP=`zfs get -H mountpoint $ZROOT/$name | awk '{print $3}'`
+  pkg image-create -F -a $PUBLISHER=$PKGURL $MP || fail "image-create"
+  pkg -R $MP install entire || fail "install entire"
+  zfs snapshot $ZROOT/$name@entire
+fi
 
-pkg image-create -F -a omnios=http://pkg.omniti.com/omnios/release $MP || fail "image-create"
-pkg -R $MP install entire || fail "install entire"
+if [[ -n "$PROFILE" ]]; then
+  echo "Applying custom profile: $PROFILE"
+  [[ -r "$PROFILE" ]] || fail "Cannot find file: $PROFILE"
+  while read line ;
+  do
+    TMPPUB=`echo $line | cut -f1 -d=`
+    TMPURL=`echo $line | cut -f2 -d=`
+    if [[ -n "$TMPURL" && "$TMPURL" != "$TMPPUB" ]]; then
+      echo "Setting publisher: $TMPPUB / $TMPURL"
+      pkg -R $MP set-publisher -g $TMPURL $TMPPUB || fail "set publisher $TMPPUB"
+      PUBLISHER=$TMPPUB
+      PKGURL=$TMPURL
+    else
+      echo "Installing additional package: $line"
+      pkg -R $MP install -g $PKGURL $line || fail "install $line"
+    fi
+  done < <(grep . $PROFILE | grep -v '^ *#')
+fi
+
 zfs snapshot $ZROOT/$name@kayak || fail "snap"
 zfs send $ZROOT/$name@kayak | bzip2 -9 > $OUT || fail "send/compress"
-zfs destroy $ZROOT/$name@kayak || fail "could not remove snapshot"
-zfs destroy $ZROOT/$name || fail "could not remove zfs filesystem"
+if [[ "$CLEANUP" -eq "1" ]]; then
+  zfs destroy $ZROOT/$name@kayak || fail "could not remove snapshot"
+  zfs destroy $ZROOT/$name || fail "could not remove zfs filesystem"
+fi

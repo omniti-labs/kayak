@@ -1,0 +1,5 @@
+    developer/versioning/git
+ms.omniti.com=http://pkg.omniti.com/omniti-ms
+    omniti/system/management/chef
+    omniti/backup/zetaback
+    omniti/system/storage/scrubbit
