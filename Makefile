@@ -90,17 +90,19 @@ install-dirs:
 	mkdir -p $(DESTDIR)/usr/share/kayak/data
 	mkdir -p $(DESTDIR)/usr/share/kayak/sample
 	mkdir -p $(DESTDIR)/var/kayak/log
+	mkdir -p $(DESTDIR)/lib/svc/manifest
+	mkdir -p $(DESTDIR)/lib/svc/method
 
 install-package:	install-dirs
 	for file in $(INSTALLS) ; do \
 		cp $$file $(DESTDIR)/usr/share/kayak/$$file ; \
 	done
-	cp http/svc-kayak /lib/svc/method/svc-kayak
-	chmod a+x /lib/svc/method/svc-kayak
+	cp http/svc-kayak $(DESTDIR)/lib/svc/method/svc-kayak
+	chmod a+x $(DESTDIR)/lib/svc/method/svc-kayak
 	cp http/css/land.css $(DESTDIR)/var/kayak/css/land.css
 	for file in $(IMG_FILES) ; do \
 		cp http/img/$$file $(DESTDIR)/var/kayak/img/$$file ; \
 	done
-	cp http/kayak.xml /lib/svc/manifest/kayak.xml
+	cp http/kayak.xml $(DESTDIR)/lib/svc/manifest/kayak.xml
 
 install:	install-dirs $(TFTP_FILES) $(WEB_FILES)
