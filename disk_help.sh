@@ -108,7 +108,7 @@ BuildRpool() {
   if [[ -z "$disks" ]]; then
     bomb "No matching disks found to build rpool"
   fi
-  for i in "$disks"
+  for i in $disks
   do
     SMIboot $i
     if [[ -n "$ztgt" ]]; then
