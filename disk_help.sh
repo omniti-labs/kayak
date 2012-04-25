@@ -105,10 +105,11 @@ BuildRpool() {
   ztype=""
   ztgt=""
   disks=`ListDisksUnique $*`
+  log "Disks being used for rpool: $disks"
   if [[ -z "$disks" ]]; then
     bomb "No matching disks found to build rpool"
   fi
-  for i in "$disks"
+  for i in $disks
   do
     SMIboot $i
     if [[ -n "$ztgt" ]]; then
@@ -117,6 +118,7 @@ BuildRpool() {
     ztgt="$ztgt ${i}s0"
     INSTALL_GRUB_TGT="$INSTALL_GRUB_TGT /dev/rsdk/${i}s2"
   done
+  log "Creating rpool with: zpool create -f rpool $ztype $ztgt"
   zpool create -f rpool $ztype $ztgt || bomb "Failed to create rpool"
   BuildBE
 }
