@@ -80,10 +80,12 @@ $(BUILDSEND_MP)/miniroot.gz:	$(MINIROOT_DEPS)
 $(DESTDIR)/var/kayak/kayak/$(VERSION).zfs.bz2:	$(BUILDSEND_MP)/kayak_$(VERSION).zfs.bz2
 	cp -p $< $@
 
-install-dirs:
+tftp-dirs:
 	mkdir -p $(DESTDIR)/tftpboot/boot/grub
 	mkdir -p $(DESTDIR)/tftpboot/boot/platform/i86pc/kernel/amd64
 	mkdir -p $(DESTDIR)/tftpboot/kayak
+
+server-dirs:
 	mkdir -p $(DESTDIR)/var/kayak/kayak
 	mkdir -p $(DESTDIR)/var/kayak/css
 	mkdir -p $(DESTDIR)/var/kayak/img
@@ -93,7 +95,7 @@ install-dirs:
 	mkdir -p $(DESTDIR)/lib/svc/manifest
 	mkdir -p $(DESTDIR)/lib/svc/method
 
-install-package:	install-dirs
+install-package:	tftp-dirs server-dirs
 	for file in $(INSTALLS) ; do \
 		cp $$file $(DESTDIR)/usr/share/kayak/$$file ; \
 	done
@@ -105,4 +107,6 @@ install-package:	install-dirs
 	done
 	cp http/kayak.xml $(DESTDIR)/lib/svc/manifest/kayak.xml
 
-install:	install-dirs $(TFTP_FILES) $(WEB_FILES)
+install-tftp:	tftp-dirs $(TFTP_FILES)
+
+install-web:	server-dirs $(WEB_FILES)
