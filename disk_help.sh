@@ -118,6 +118,8 @@ BuildRpool() {
     ztgt="$ztgt ${i}s0"
     INSTALL_GRUB_TGT="$INSTALL_GRUB_TGT /dev/rsdk/${i}s2"
   done
+  log "zpool destroy rpool (just in case we've been run twice)"
+  zpool destroy rpool 2> /dev/null
   log "Creating rpool with: zpool create -f rpool $ztype $ztgt"
   zpool create -f rpool $ztype $ztgt || bomb "Failed to create rpool"
   BuildBE
