@@ -57,7 +57,7 @@ if [[ -z "$OUT" ]]; then
   OUT=$MPR/kayak_$name.zfs.bz2
 fi
 
-if zfs list $ZROOT/$name@entire; then
+if zfs list $ZROOT/$name@entire > /dev/null 2>&1; then
   zfs rollback $ZROOT/$name@entire
   MP=`zfs get -H mountpoint $ZROOT/$name | awk '{print $3}'`
 else
