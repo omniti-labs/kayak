@@ -129,7 +129,7 @@ GetTargetVolSize() {
     # prtconf always reports in megabytes
     local mem=`/usr/sbin/prtconf | /bin/awk '/^Memory size/ { print $3 }'`
     if [[ $mem -lt 4096 ]]; then
-        local volsize=1
+        local vsize=1
     else
         local quart=`echo "scale=1;$mem/4096" | /bin/bc`
         local vsize=`printf %0.f $quart`
