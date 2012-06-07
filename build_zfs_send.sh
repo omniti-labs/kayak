@@ -58,7 +58,7 @@ if [[ -z "$OUT" ]]; then
 fi
 
 if zfs list $ZROOT/$name@entire > /dev/null 2>&1; then
-  zfs rollback $ZROOT/$name@entire
+  zfs rollback -r $ZROOT/$name@entire
   MP=`zfs get -H mountpoint $ZROOT/$name | awk '{print $3}'`
 else
   zfs create $ZROOT/$name || fail "zfs create"
