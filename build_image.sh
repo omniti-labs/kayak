@@ -29,6 +29,9 @@ fail() {
 	exit 1
 }
 
+PUBLISHER=omnios
+: ${PKGURL:=http://pkg.omniti.com/omnios/release}
+: ${GZIP_CMD:=gzip}
 SRCDIR=$(dirname $0)
 DIDWORK=0
 if [[ ${SRCDIR:0:1} != "/" ]]; then
@@ -232,7 +235,8 @@ step() {
 
 	"pkg")
 
-	$PKG image-create -F -a omnios=http://pkg.omniti.com/omnios/release $ROOTDIR || fail "image-create"
+	echo "Creating image of $PUBLISHER from $PKGURL"
+	$PKG image-create -F -a $PUBLISHER=$PKGURL $ROOTDIR || fail "image-create"
 	$PKG -R $ROOTDIR install $PKGS || fail "install"
 	chkpt fixup
 	;;
@@ -324,7 +328,7 @@ step() {
 	;;
 
 	"compress")
-	gzip -c -f $MKFILEDIR/miniroot > $WORKDIR/miniroot.gz
+	$GZIP_CMD -c -f $MKFILEDIR/miniroot > $WORKDIR/miniroot.gz
 	rm -f $MKFILEDIR/miniroot
 	chmod 644 $WORKDIR/miniroot.gz
 	echo " === Finished ==="

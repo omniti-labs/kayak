@@ -30,7 +30,8 @@ fail() {
 }
 
 PUBLISHER=omnios
-PKGURL=http://pkg.omniti.com/omnios/release
+: ${PKGURL:=http://pkg.omniti.com/omnios/release}
+: ${BZIP2:=bzip2}
 ZROOT=rpool
 OUT=
 CLEANUP=0
@@ -88,7 +89,7 @@ if [[ -n "$PROFILE" ]]; then
 fi
 
 zfs snapshot $ZROOT/$name@kayak || fail "snap"
-zfs send $ZROOT/$name@kayak | bzip2 -9 > $OUT || fail "send/compress"
+zfs send $ZROOT/$name@kayak | $BZIP2 -9 > $OUT || fail "send/compress"
 if [[ "$CLEANUP" -eq "1" ]]; then
   zfs destroy $ZROOT/$name@kayak || fail "could not remove snapshot"
   zfs destroy $ZROOT/$name || fail "could not remove zfs filesystem"
