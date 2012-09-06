@@ -92,7 +92,7 @@ server-dirs:
 	mkdir -p $(DESTDIR)/usr/share/kayak/data
 	mkdir -p $(DESTDIR)/usr/share/kayak/sample
 	mkdir -p $(DESTDIR)/var/kayak/log
-	mkdir -p $(DESTDIR)/lib/svc/manifest
+	mkdir -p $(DESTDIR)/lib/svc/manifest/network
 	mkdir -p $(DESTDIR)/lib/svc/method
 
 install-package:	tftp-dirs server-dirs
@@ -105,7 +105,7 @@ install-package:	tftp-dirs server-dirs
 	for file in $(IMG_FILES) ; do \
 		cp http/img/$$file $(DESTDIR)/var/kayak/img/$$file ; \
 	done
-	cp http/kayak.xml $(DESTDIR)/lib/svc/manifest/kayak.xml
+	cp http/kayak.xml $(DESTDIR)/lib/svc/manifest/network/kayak.xml
 
 install-tftp:	tftp-dirs $(TFTP_FILES)
 
