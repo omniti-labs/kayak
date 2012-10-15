@@ -1147,6 +1147,7 @@
 20569215 /etc/devdi_test_db.200
 20569375 /usr/sbin/zpool
 20569389 /lib/libzfs.so.1
+       0 /lib/libzfs_core.so.1
 20569397 /usr/lib/fm
 20569397 /usr/lib/fm/libtopo.so
 20569397 /usr/lib/fm/libtopo.so.1
@@ -1156,6 +1157,7 @@
 20569420 /opt
 20569445 /usr/lib/libmeta.so
 20570233 /lib/libzfs.so
+       0 /lib/libzfs_core.so
 20570275 /usr/sfw
 20570276 /usr/sfw/lib
 20570288 /kernel/sched
