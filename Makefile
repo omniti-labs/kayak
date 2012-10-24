@@ -24,7 +24,7 @@
 # Use is subject to license terms.
 #
 
-VERSION=r151002
+VERSION?=$(shell awk '$$1 == "OmniOS" { print $$3 }' /etc/release)
 BUILDSEND=rpool/kayak_image
 
 
