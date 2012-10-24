@@ -165,7 +165,7 @@ DRIVERS="driver/audio driver/crypto/dca driver/crypto/tpm driver/firewire
 	driver/usb driver/usb/ugen driver/xvm/pv"
 
 PARTS="release/name release/notices service/picl install/beadm SUNWcs SUNWcsd
-	library/libidn shell/pipe-viewer"
+	library/libidn shell/pipe-viewer text/less /network/ssh editor/vim developer/linker"
 
 PKGS="$PARTS $SYSTEM $DRIVERS $DEBUG"
 
