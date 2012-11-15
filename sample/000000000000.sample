@@ -4,4 +4,11 @@ SetTimezone US/Eastern
 UseDNS 4.2.2.1 office.omniti.com
 Postboot '/sbin/ipadm create-if e1000g0'
 Postboot '/sbin/ipadm create-addr -T dhcp e1000g0/v4'
-NO_REBOOT=1
+#
+# For static networking, edit the following for your environment
+#   and remove the second ipadm line above.
+# Postboot '/sbin/ipadm create-addr -T static -a 192.168.1.2/24 e1000g0/v4'
+# Postboot '/sbin/route -p add default 192.168.1.1'
+#
+# Uncomment to disable automatic reboot
+# NO_REBOOT=1
