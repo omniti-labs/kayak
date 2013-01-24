@@ -1,7 +1,10 @@
-BuildRpool c0d0
+# See http://omnios.omniti.com/wiki.php/KayakClientOptions
+BuildRpool c0t0d0 c0t1d0
 SetHostname instalz
-SetTimezone US/Eastern
-UseDNS 4.2.2.1 office.omniti.com
+SetTimezone UTC
+UseDNS 4.2.2.1 example.com
+#
+# Substitute your interface name for "e1000g0" below
 Postboot '/sbin/ipadm create-if e1000g0'
 Postboot '/sbin/ipadm create-addr -T dhcp e1000g0/v4'
 #
