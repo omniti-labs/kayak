@@ -43,3 +43,5 @@
 0 /usr/bin/md5sum
 0 /usr/gnu/bin/sha1sum
 0 /usr/bin/sha1sum
+0 /lib/libumem_trampoline.so
+0 /lib/libumem_trampoline.so.1
