@@ -30,7 +30,7 @@ ListDisks() {
   for rdsk in $(prtconf -v | grep dev_link | awk -F= '/\/dev\/rdsk\/c.*p0/{print $2;}')
   do
     disk=`echo $rdsk | sed -e 's/.*\///g; s/p0//;'`
-    size=`prtvtoc $rdsk 2>/dev/null | awk '/bytes\/sector/{bps=$2} /sectors\/cylinder/{bpc=bps*$2} /accessible sectors/{print ($2*bps)/1073741824;} /accessible cylinders/{print int(($2*bpc)/1048576);}'`
+    size=`prtvtoc $rdsk 2>/dev/null | awk '/bytes\/sector/{bps=$2} /sectors\/cylinder/{bpc=bps*$2} /accessible sectors/{print ($2*bps)/1048576;} /accessible cylinders/{print int(($2*bpc)/1048576);}'`
     disksize+=([$disk]=$size)
   done
 
