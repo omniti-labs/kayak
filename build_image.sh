@@ -127,7 +127,9 @@ SYSTEM="system/boot/grub system/boot/real-mode system/boot/wanboot/internal
 	system/library/storage/scsi-plugins
 	system/library system/network
 	system/prerequisite/gnu system/storage/luxadm
-	system/storage/fibre-channel/port-utility"
+	system/storage/fibre-channel/port-utility
+        system/pciutils
+        system/pciutils/pci.ids"
 
 #DEBUG="developer/debug/mdb system/dtrace developer/dtrace"
 
@@ -165,8 +167,8 @@ DRIVERS="driver/audio driver/crypto/dca driver/crypto/tpm driver/firewire
 	driver/usb driver/usb/ugen driver/xvm/pv"
 
 PARTS="release/name release/notices service/picl install/beadm SUNWcs SUNWcsd
-	library/libidn shell/pipe-viewer text/less /network/ssh editor/vim developer/linker
-	file/gnu-coreutils"
+	library/libidn shell/pipe-viewer text/less /network/ssh editor/vim
+        developer/linker file/gnu-coreutils"
 
 PKGS="$PARTS $SYSTEM $DRIVERS $DEBUG"
 
