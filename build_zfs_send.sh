@@ -30,6 +30,7 @@ fail() {
 }
 
 PUBLISHER=omnios
+OMNIOS_URL=http://pkg.omniti.com/omnios/release
 : ${PKGURL:=http://pkg.omniti.com/omnios/release}
 : ${BZIP2:=bzip2}
 ZROOT=rpool
@@ -43,13 +44,14 @@ do
     -d) ZROOT=$2; shift 2;;
     -o) OUT=$2; shift 2;;
     -p) PROFILE=$2; shift 2;;
+    -P) PUBLISHER_OVERRIDE=1; shift ;;
     --) shift; break ;;
   esac
 done
 
 name=$1
 if [[ -z "$name" ]]; then
-  echo "$0 [-d zfsparent] [-p profile] [-o outputfile] <release_name>"
+  echo "$0 [-cP] [-d zfsparent] [-p profile] [-o outputfile] <release_name>"
   exit
 fi
 
@@ -87,6 +89,13 @@ if [[ -n "$PROFILE" ]]; then
     fi
   done < <(grep . $PROFILE | grep -v '^ *#')
 fi
+
+if [[ -n "$PUBLISHER_OVERRIDE" ]]; then
+  OMNIOS_URL=$PKGURL
+fi
+echo "Setting omnios publisher to $OMNIOS_URL"
+pkg -R $MP unset-publisher omnios
+pkg -R $MP set-publisher --no-refresh -g $OMNIOS_URL omnios
 
 zfs snapshot $ZROOT/$name@kayak || fail "snap"
 zfs send $ZROOT/$name@kayak | $BZIP2 -9 > $OUT || fail "send/compress"
