@@ -240,6 +240,16 @@
 0 /usr/platform/i86xpv/lib/mdb/kvm/xpv.so
 0 /usr/platform/i86xpv/lib/mdb/kvm/xpv_psm.so
 0 /usr/platform/i86xpv/lib/mdb/kvm/xpv_uppc.so
+0 /lib
+0 /lib/amd64
+0 /lib/libumem.so
+0 /lib/libumem.so.1
+0 /lib/amd64/libumem.so
+0 /lib/amd64/libumem.so.1
+0 /lib/libumem_trampoline.so
+0 /lib/libumem_trampoline.so.1
+0 /lib/amd64/libumem_trampoline.so.1
+0 /lib/amd64/libumem_trampoline.so
 0 /usr/share/man
 0 /usr/share/man/man1
 0 /usr/share/man/man1/adb.1

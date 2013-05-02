@@ -727,7 +727,6 @@
 0 /etc/default/init
 0 /etc/default/fs
 0 /etc/default/tar
-0 /etc/default/utmpd
 0 /etc/default/devfsadm
 0 /etc/default/dhcpagent
 0 /etc/default/su

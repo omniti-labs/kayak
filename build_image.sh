@@ -73,7 +73,7 @@ UNNEEDED_MANIFESTS="application/management/net-snmp.xml
 	system/wusb.xml system/zones.xml
 	system/intrd.xml system/coreadm.xml
 	system/extended-accounting.xml
-	system/sysevent.xml system/scheduler.xml
+	system/scheduler.xml
 	system/logadm-upgrade.xml system/resource-mgmt.xml
 	system/idmap.xml
 	network/ldap/client.xml network/shares/reparsed.xml
@@ -102,8 +102,8 @@ UNNEEDED_MANIFESTS="application/management/net-snmp.xml
 	network/dns/client.xml network/dns/install.xml
 	network/dns/multicast.xml platform/i86pc/acpihpd.xml
 	system/hostid.xml system/power.xml system/pfexecd.xml
-	system/consadm.xml system/pools.xml
-	system/stmf.xml system/fmd.xml
+	system/consadm.xml system/pools.xml system/console-login.xml
+	system/stmf.xml system/fmd.xml system/utmp.xml
 	system/poold.xml system/dumpadm.xml"
 
 SYSTEM="system/boot/grub system/boot/real-mode system/boot/wanboot/internal
@@ -127,9 +127,7 @@ SYSTEM="system/boot/grub system/boot/real-mode system/boot/wanboot/internal
 	system/library/storage/scsi-plugins
 	system/library system/network
 	system/prerequisite/gnu system/storage/luxadm
-	system/storage/fibre-channel/port-utility
-        system/pciutils
-        system/pciutils/pci.ids"
+	system/storage/fibre-channel/port-utility"
 
 #DEBUG="developer/debug/mdb system/dtrace developer/dtrace"
 
@@ -265,6 +263,7 @@ step() {
 	${SVCCFG} -s 'system/boot-archive' setprop 'start/exec=:true'
 	${SVCCFG} -s 'system/manifest-import' setprop 'start/exec=:true'
 	${SVCCFG} -s "system/intrd:default" setprop "general/enabled=false"
+	${SVCCFG} -s "system/initial-boot" setprop "start/timeout_seconds=600"
 	echo " --- nuetering the manifest import"
         echo "#!/bin/ksh" > ${ROOTDIR}/lib/svc/method/manifest-import
         echo "exit 0" >> ${ROOTDIR}/lib/svc/method/manifest-import
