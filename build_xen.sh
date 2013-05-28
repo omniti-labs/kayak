@@ -20,6 +20,7 @@
 #
 # CDDL HEADER END
 #
+# Copyright 2013 by Andrzej Szeszo. All rights reserved.
 #
 # Copyright 2013 OmniTI Computer Consulting, Inc.  All rights reserved.
 # Use is subject to license terms.
