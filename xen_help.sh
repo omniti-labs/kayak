@@ -155,8 +155,8 @@ EOF
     log "...enabling DNS resolution"
     cp $ALTROOT/etc/nsswitch.dns $ALTROOT/etc/nsswitch.conf
 
-    # Install ec2-credential and ec2-api-tools packages
-    log "...installing EC2 packages"
-    pkg -R $ALTROOT install ec2-credential ec2-api-tools
+    # Install ec2-credential and ec2-api-tools packages. rsync needed for vagrant
+    log "...installing EC2 and rsync packages"
+    pkg -R $ALTROOT install network/rsync ec2-credential ec2-api-tools
 
 }
