@@ -70,11 +70,17 @@ $(DESTDIR)/tftpboot/boot/platform/i86pc/kernel/amd64/unix:	/platform/i86pc/kerne
 $(DESTDIR)/tftpboot/kayak/miniroot.gz:	$(BUILDSEND_MP)/miniroot.gz
 	cp -p $< $@
 
+build_image.sh:
+	VERSION=$(VERSION) ./build_image.sh
+
+build_zfs_send.sh:
+	VERSION=$(VERSION) ./build_zfs_image.sh
+
 $(BUILDSEND_MP)/miniroot.gz:	$(MINIROOT_DEPS)
 	if test -n "`zfs list -H -t snapshot $(BUILDSEND)/root@fixup 2>/dev/null`"; then \
-	  ./build_image.sh $(BUILDSEND) fixup ; \
+	  VERSION=$(VERSION) ./build_image.sh $(BUILDSEND) fixup ; \
 	else \
-	  ./build_image.sh $(BUILDSEND) begin ; \
+	  VERSION=$(VERSION) ./build_image.sh $(BUILDSEND) begin ; \
 	fi
 
 $(DESTDIR)/var/kayak/kayak/$(VERSION).zfs.bz2:	$(BUILDSEND_MP)/kayak_$(VERSION).zfs.bz2

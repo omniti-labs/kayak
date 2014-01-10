@@ -34,6 +34,7 @@ PUBLISHER=omnios
 : ${GZIP_CMD:=gzip}
 SRCDIR=$(dirname $0)
 DIDWORK=0
+BUILDNUM=${VERSION//r/}
 if [[ ${SRCDIR:0:1} != "/" ]]; then
   SRCDIR=`pwd`/$SRCDIR
 fi
@@ -238,7 +239,14 @@ step() {
 
 	echo "Creating image of $PUBLISHER from $PKGURL"
 	$PKG image-create -F -a $PUBLISHER=$PKGURL $ROOTDIR || fail "image-create"
+        # If a version was requested, respect it
+	if [[ -n $BUILDNUM ]]; then
+		$PKG -R $ROOTDIR install illumos-gate@11-0.$BUILDNUM omnios-userland@11-0.$BUILDNUM || fail "version constraint prep"
+	fi
 	$PKG -R $ROOTDIR install $PKGS || fail "install"
+	if [[ -n $BUILDNUM ]]; then
+		$PKG -R $ROOTDIR uninstall illumos-gate omnios-userland || fail "version constraint cleanup"
+	fi
 	chkpt fixup
 	;;
 
