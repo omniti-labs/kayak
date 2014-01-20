@@ -78,9 +78,9 @@ build_zfs_send.sh:
 
 $(BUILDSEND_MP)/miniroot.gz:	$(MINIROOT_DEPS)
 	if test -n "`zfs list -H -t snapshot $(BUILDSEND)/root@fixup 2>/dev/null`"; then \
-	  VERSION=$(VERSION) ./build_image.sh $(BUILDSEND) fixup ; \
+	  VERSION=$(VERSION) DEBUG=$(DEBUG) ./build_image.sh $(BUILDSEND) fixup ; \
 	else \
-	  VERSION=$(VERSION) ./build_image.sh $(BUILDSEND) begin ; \
+	  VERSION=$(VERSION) DEBUG=$(DEBUG) ./build_image.sh $(BUILDSEND) begin ; \
 	fi
 
 $(DESTDIR)/var/kayak/kayak/$(VERSION).zfs.bz2:	$(BUILDSEND_MP)/kayak_$(VERSION).zfs.bz2
