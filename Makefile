@@ -47,7 +47,7 @@ WEB_FILES=$(DESTDIR)/var/kayak/kayak/$(VERSION).zfs.bz2
 IMG_FILES=corner.png tail_bg_v1.png OmniOS_logo_medium.png tail_bg_v2.png
 
 anon.dtrace.conf:
-	dtrace -A -q -n'int seen[string]; fsinfo:::/substr(args[0]->fi_pathname,0,1)=="/" && seen[args[0]->fi_pathname]==0/{printf("%d %s %s\n",timestamp/1000000, args[0]->fi_pathname, args[0]->fi_mount);seen[args[0]->fi_pathname]=1;}' -o $@.tmp
+	dtrace -A -q -n'int seen[string]; fsinfo:::/args[0]->fi_mount=="/" && seen[args[0]->fi_pathname]==0/{printf("%d %s\n",timestamp/1000000, args[0]->fi_pathname);seen[args[0]->fi_pathname]=1;}' -o $@.tmp
 	cat /kernel/drv/dtrace.conf $@.tmp > $@
 	rm $@.tmp
 
