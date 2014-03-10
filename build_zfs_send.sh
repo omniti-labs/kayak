@@ -101,7 +101,7 @@ if [[ -n "$PUBLISHER_OVERRIDE" ]]; then
 fi
 echo "Setting omnios publisher to $OMNIOS_URL"
 pkg -R $MP unset-publisher omnios
-pkg -R $MP set-publisher --no-refresh -g $OMNIOS_URL omnios
+pkg -R $MP set-publisher -P --no-refresh -g $OMNIOS_URL omnios
 
 zfs snapshot $ZROOT/$name@kayak || fail "snap"
 zfs send $ZROOT/$name@kayak | $BZIP2 -9 > $OUT || fail "send/compress"
