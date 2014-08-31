@@ -35,13 +35,8 @@ Ether(){
 UseDNS() {
   server=$1; shift
   domain=$1
-  cat <<EOF > $ALTROOT/etc/resolv.conf
-nameserver $server
-domain $domain
-search $*
-EOF
-  sed -I -e 's/^hosts:.*/hosts: files dns/;' $ALTROOT/etc/nsswitch.conf
-  sed -I -e 's/^ipnodes:.*/ipnodes: files dns/;' $ALTROOT/etc/nsswitch.conf
+  EnableDNS $domain $*
+  SetDNS $server
 }
 
 EnableDNS() {
