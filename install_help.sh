@@ -176,6 +176,19 @@ SetHostname()
   log "Setting hostname: ${1}"
   /bin/hostname "$1"
   echo "$1" > $ALTROOT/etc/nodename
+  head -n 26 $ALTROOT/etc/hosts > /tmp/hosts
+  echo "::1\t\t$1" >> /tmp/hosts
+  echo "127.0.0.1\t$1" >> /tmp/hosts
+  cat /tmp/hosts > $ALTROOT/etc/hosts
+}
+
+AutoHostname() {
+  suffix=$1
+  macadr=`/sbin/ifconfig -a | \
+          /usr/bin/awk '/UP/{if($2 !~ /LOOPBACK/){iface=$1;}} /ether/{if(iface){print $2; exit;}}' | \
+          /bin/sed -e 's/^/ 0/g;s/:/-/g; s/0\([0-9A-F][0-9A-F]\)/\1/g; s/ //g;'`
+  [ -z $suffix ] && suffix=omnios
+  SetHostname $macadr-$suffix
 }
 
 SetTimezone()
