@@ -52,7 +52,9 @@ EOF
 }
 
 SetDNS() {
-  /usr/bin/grep -c 'files dns' $ALTROOT/etc/resolv.conf 2> /dev/null > /dev/null || EnableDNS
+# NOTE: If the nsswitch.conf file specifies DNS in a manner other than:
+# "files dns", setting EnableDNS will have to become more sophisticated.
+  /usr/bin/grep -c 'files dns' $ALTROOT/etc/nsswitch.conf 2> /dev/null > /dev/null || EnableDNS
 
   for srv in $*; do
     echo nameserver $srv >> $ALTROOT/etc/resolv.conf
