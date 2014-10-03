@@ -29,6 +29,8 @@
 0 /lib/libcontract.so
 0 /usr/lib/libinstzones.so.1
 0 /usr/lib/libl.so.1
+0 /usr/lib/libsasl.so.1
+0 /usr/lib/amd64/libsasl.so.1
 0 /usr/bin/svcs
 0 /usr/sbin/svccfg
 0 /usr/sbin/zstreamdump
@@ -47,6 +49,10 @@
 0 /usr/bin/pfiles
 0 /usr/bin/vim
 0 /usr/lib/lddstub
+0 /usr/lib/libidn.so.11
+0 /usr/lib/libidn.so.11.6.12
+0 /usr/lib/amd64/libidn.so.11
+0 /usr/lib/amd64/libidn.so.11.6.12
 0 /usr/bin/ldd
 0 /usr/bin/i86/truss
 0 /usr/bin/truss
