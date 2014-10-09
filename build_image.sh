@@ -132,7 +132,7 @@ SYSTEM="system/boot/grub system/boot/real-mode system/boot/wanboot/internal
 	system/prerequisite/gnu system/storage/luxadm
 	system/storage/fibre-channel/port-utility"
 
-#DEBUG="developer/debug/mdb system/dtrace developer/dtrace"
+DEBUG_PKGS="developer/debug/mdb system/dtrace developer/dtrace"
 
 DRIVERS="driver/audio driver/crypto/dca driver/crypto/tpm driver/firewire
 	driver/graphics/agpgart driver/graphics/atiatom driver/graphics/drm
@@ -171,9 +171,12 @@ PARTS="release/name release/notices service/picl install/beadm SUNWcs SUNWcsd
 	library/libidn shell/pipe-viewer text/less /network/ssh editor/vim
         developer/linker file/gnu-coreutils"
 
-PKGS="$PARTS $SYSTEM $DRIVERS $DEBUG"
+PKGS="$PARTS $SYSTEM $DRIVERS"
 
-BIGROOT=
+if [ -n "$DEBUG" ]; then
+	PKGS="$PKGS $DEBUG_PKGS"
+	BIGROOT=1
+fi
 CULL="perl python package/pkg snmp"
 RMRF="/var/pkg /usr/share/man /usr/lib/python2.6 /usr/lib/iconv"
 
@@ -261,6 +264,8 @@ step() {
 		fail "vfstab / updated"
 	rm $WORKDIR/vfstab
 	cp $ROOTDIR/lib/svc/seed/global.db $ROOTDIR/etc/svc/repository.db
+
+	sed -i 's,PASSREQ=YES,PASSREQ=NO,' $ROOTDIR/etc/default/login
 
 	${SVCCFG} import ${ROOTDIR}/lib/svc/manifest/milestone/sysconfig.xml
 	for xml in $UNNEEDED_MANIFESTS; do

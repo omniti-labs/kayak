@@ -47,7 +47,7 @@ WEB_FILES=$(DESTDIR)/var/kayak/kayak/$(VERSION).zfs.bz2
 IMG_FILES=corner.png tail_bg_v1.png OmniOS_logo_medium.png tail_bg_v2.png
 
 anon.dtrace.conf:
-	dtrace -A -q -n'int seen[string]; fsinfo:::/substr(args[0]->fi_pathname,0,1)=="/" && seen[args[0]->fi_pathname]==0/{printf("%d %s %s\n",timestamp/1000000, args[0]->fi_pathname, args[0]->fi_mount);seen[args[0]->fi_pathname]=1;}' -o $@.tmp
+	dtrace -A -q -n'int seen[string]; fsinfo:::/args[0]->fi_mount=="/" && seen[args[0]->fi_pathname]==0/{printf("%d %s\n",timestamp/1000000, args[0]->fi_pathname);seen[args[0]->fi_pathname]=1;}' -o $@.tmp
 	cat /kernel/drv/dtrace.conf $@.tmp > $@
 	rm $@.tmp
 
@@ -78,9 +78,9 @@ build_zfs_send.sh:
 
 $(BUILDSEND_MP)/miniroot.gz:	$(MINIROOT_DEPS)
 	if test -n "`zfs list -H -t snapshot $(BUILDSEND)/root@fixup 2>/dev/null`"; then \
-	  VERSION=$(VERSION) ./build_image.sh $(BUILDSEND) fixup ; \
+	  VERSION=$(VERSION) DEBUG=$(DEBUG) ./build_image.sh $(BUILDSEND) fixup ; \
 	else \
-	  VERSION=$(VERSION) ./build_image.sh $(BUILDSEND) begin ; \
+	  VERSION=$(VERSION) DEBUG=$(DEBUG) ./build_image.sh $(BUILDSEND) begin ; \
 	fi
 
 $(DESTDIR)/var/kayak/kayak/$(VERSION).zfs.bz2:	$(BUILDSEND_MP)/kayak_$(VERSION).zfs.bz2
