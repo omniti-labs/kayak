@@ -186,9 +186,11 @@ AutoHostname() {
   suffix=$1
   macadr=`/sbin/ifconfig -a | \
           /usr/bin/awk '/UP/{if($2 !~ /LOOPBACK/){iface=$1;}} /ether/{if(iface){print $2; exit;}}' | \
-          /bin/sed -e 's/^/ 0/g;s/:/-/g; s/0\([0-9A-F][0-9A-F]\)/\1/g; s/ //g;'`
+          /bin/tr '[:upper:]' '[:lower:]' | \
+          /bin/sed -e 's/^/ 0/g;s/:/-0/g; s/0\([0-9a-f][0-9a-f]\)/\1/g; s/ //g;'`
   [ -z $suffix ] && suffix=omnios
-  SetHostname $macadr-$suffix
+  [ "$suffix" == "-" ] && suffix= || suffix=-$suffix
+  SetHostname $macadr$suffix
 }
 
 SetTimezone()
