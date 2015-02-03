@@ -68,7 +68,7 @@ if zfs list $ZROOT/$name@entire > /dev/null 2>&1; then
 else
   zfs create $ZROOT/$name || fail "zfs create"
   MP=`zfs get -H mountpoint $ZROOT/$name | awk '{print $3}'`
-  pkg image-create -F -a $PUBLISHER=$PKGURL $MP || fail "image-create"
+  pkg image-create -F -p $PUBLISHER=$PKGURL $MP || fail "image-create"
   # If r151006, use a specific version to avoid missing incorporation
   if [[ "$name" == "r151006" ]]; then
     entire_version="151006:20131210T224515Z"

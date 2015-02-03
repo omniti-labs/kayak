@@ -243,7 +243,7 @@ step() {
 	"pkg")
 
 	echo "Creating image of $PUBLISHER from $PKGURL"
-	$PKG image-create -F -a $PUBLISHER=$PKGURL $ROOTDIR || fail "image-create"
+	$PKG image-create -F -p $PUBLISHER=$PKGURL $ROOTDIR || fail "image-create"
         # If a version was requested, respect it
 	if [[ -n $BUILDNUM ]]; then
 		$PKG -R $ROOTDIR install illumos-gate@11-0.$BUILDNUM omnios-userland@11-0.$BUILDNUM || fail "version constraint prep"
