@@ -30,9 +30,8 @@ fail() {
 }
 
 # NOTE --> The URL needs to be updated with every release.
-# Change "bloody" to whatever release the current branch is.
 PUBLISHER=omnios
-: ${PKGURL:=http://pkg.omniti.com/omnios/bloody}
+: ${PKGURL:=http://pkg.omniti.com/omnios/r151014}
 : ${GZIP_CMD:=gzip}
 SRCDIR=$(dirname $0)
 DIDWORK=0
