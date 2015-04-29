@@ -132,6 +132,7 @@
 0 /kernel/misc/amd64/rpcsec
 0 /kernel/misc/amd64/pcihp
 0 /kernel/misc/amd64/strategy
+0 /kernel/misc/amd64/virtio
 0 /kernel/misc/pmcs/amd64
 0 /kernel/misc/pmcs/amd64/pmcs8001fw
 0 /kernel/kmdb/amd64
@@ -403,6 +404,7 @@
 0 /kernel/drv/amd64/ecpp
 0 /kernel/drv/amd64/ugen
 0 /kernel/drv/amd64/devinfo
+0 /kernel/drv/amd64/vioblk
 0 /kernel/drv/cmdk.conf
 0 /kernel/drv/tavor.conf
 0 /kernel/drv/aggr.conf
