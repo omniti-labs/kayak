@@ -56,7 +56,16 @@ if [[ ! -d $ROOTDIR ]]; then
 fi
 SVCCFG_DTD=${ROOTDIR}/usr/share/lib/xml/dtd/service_bundle.dtd.1
 SVCCFG_REPOSITORY=${ROOTDIR}/etc/svc/repository.db
-SVCCFG=/usr/sbin/svccfg
+#SVCCFG=/usr/sbin/svccfg
+if [[ -f ${PREBUILT_ILLUMOS}/usr/src/cmd/svc/svccfg/svccfg-native ]]; then
+	SVCCFG=${PREBUILT_ILLUMOS}/usr/src/cmd/svc/svccfg/svccfg-native
+else
+	echo "WARNING -- Not using 'native' svccfg, may hang on build."
+	echo "       We recommend a pre-built illumos's svccfg-native."
+	echo "       Set PREBUILT_ILLUMOS in your environment to point"
+	echo "       to a built illumos-omnios repository."
+	SVCCFG=/usr/sbin/svccfg
+fi
 export WORKDIR ROOTDIR SVCCFG_DTD SVCCFG_REPOSITORY SVCCFG
 
 # This was uber-helpful
@@ -272,14 +281,21 @@ step() {
 		rm -f ${ROOTDIR}/lib/svc/manifest/$xml && echo " --- tossing $xml"
 	done
 	echo " --- initial manifest import"
-	${ROOTDIR}/lib/svc/method/manifest-import -f ${ROOTDIR}/etc/svc/repository.db \
+	# See if we can transform manifest-import to use the 'native' svccfg.
+	sed 's/\/usr\/sbin\/svccfg/\$SVCCFG/g' \
+	    < ${ROOTDIR}/lib/svc/method/manifest-import \
+	    > /tmp/manifest-import.$$
+	chmod 0755 /tmp/manifest-import.$$
+	export SVCCFG
+	/tmp/manifest-import.$$ -f ${ROOTDIR}/etc/svc/repository.db \
 		-d ${ROOTDIR}/lib/svc/manifest
+	/bin/rm -f /tmp/manifest-import.$$
 
 	${SVCCFG} -s 'system/boot-archive' setprop 'start/exec=:true'
 	${SVCCFG} -s 'system/manifest-import' setprop 'start/exec=:true'
 	${SVCCFG} -s "system/intrd:default" setprop "general/enabled=false"
 	${SVCCFG} -s "system/initial-boot" setprop "start/timeout_seconds=600"
-	echo " --- nuetering the manifest import"
+	echo " --- neutering the manifest import"
         echo "#!/bin/ksh" > ${ROOTDIR}/lib/svc/method/manifest-import
         echo "exit 0" >> ${ROOTDIR}/lib/svc/method/manifest-import
 	chmod 555 ${ROOTDIR}/lib/svc/method/manifest-import
