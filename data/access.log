@@ -241,6 +241,8 @@
 20502930 /etc/passwd
 20502931 /lib/libsecdb.so.1
 20502931 /lib/amd64/libsecdb.so.1
+20502931 /lib/libsqlite-sys.so.2.8.15
+20502931 /lib/amd64/libsqlite-sys.so.2.8.15
 20502934 /etc/user_attr
 20503070 /usr/sbin
 20503082 /lib/svc/method
