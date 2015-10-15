@@ -30,10 +30,9 @@ fail() {
 }
 
 # NOTE --> The URL needs to be updated with every release.  
-# Change "bloody" to whatever release the current branch is.
 PUBLISHER=omnios
-OMNIOS_URL=http://pkg.omniti.com/omnios/bloody
-: ${PKGURL:=http://pkg.omniti.com/omnios/bloody}
+OMNIOS_URL=http://pkg.omniti.com/omnios/r151016
+: ${PKGURL:=http://pkg.omniti.com/omnios/r151016}
 : ${BZIP2:=bzip2}
 ZROOT=rpool
 OUT=
@@ -108,7 +107,7 @@ pkg -R $MP set-publisher -P --no-refresh -g $OMNIOS_URL omnios
 # NOTE:  Uncomment this line when you branch off a release.  "bloody" packages
 # are unsigned, but release ones are, and we should require checking their
 # signatures.
-#pkg -R $MP set-publisher --set-property signature-policy=require-signatures omnios
+pkg -R $MP set-publisher --set-property signature-policy=require-signatures omnios
 
 zfs snapshot $ZROOT/$name@kayak || fail "snap"
 zfs send $ZROOT/$name@kayak | $BZIP2 -9 > $OUT || fail "send/compress"
