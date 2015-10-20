@@ -406,6 +406,7 @@
 0 /kernel/drv/amd64/devinfo
 0 /kernel/drv/amd64/vioblk
 0 /kernel/drv/amd64/vioif
+0 /kernel/drv/amd64/nvme
 0 /kernel/drv/cmdk.conf
 0 /kernel/drv/tavor.conf
 0 /kernel/drv/aggr.conf
@@ -531,6 +532,7 @@
 0 /kernel/drv/bscv.conf
 0 /kernel/drv/sad.conf
 0 /kernel/drv/pppt.conf
+0 /kernel/drv/nvme.conf
 0 /kernel/dtrace/amd64
 0 /kernel/dtrace/amd64/sdt
 0 /kernel/dtrace/amd64/lockstat

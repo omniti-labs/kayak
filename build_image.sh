@@ -174,7 +174,7 @@ DRIVERS="driver/audio driver/crypto/dca driver/crypto/tpm driver/firewire
 	driver/storage/sbp2 driver/storage/scsa1394 driver/storage/sdcard
 	driver/storage/ses driver/storage/si3124 driver/storage/smp
 	driver/usb driver/usb/ugen driver/xvm/pv driver/storage/vioblk
-	driver/network/vioif"
+	driver/network/vioif driver/storage/nvme"
 
 PARTS="release/name release/notices service/picl install/beadm SUNWcs SUNWcsd
 	library/libidn shell/pipe-viewer text/less /network/ssh editor/vim
