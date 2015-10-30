@@ -26,6 +26,8 @@
 0 /kernel/crypto/amd64/swrand
 0 /kernel/crypto/amd64/md4
 0 /kernel/crypto/amd64/sha2
+0 /kernel/crypto/amd64/edonr
+0 /kernel/crypto/amd64/skein
 0 /kernel/crypto/amd64/rsa
 0 /kernel/crypto/amd64/arcfour
 0 /kernel/crypto/amd64/sha1
@@ -100,6 +102,8 @@
 0 /kernel/misc/amd64/hook
 0 /kernel/misc/amd64/hwa1480_fw
 0 /kernel/misc/amd64/sha2
+0 /kernel/misc/amd64/edonr
+0 /kernel/misc/amd64/skein
 0 /kernel/misc/amd64/s1394
 0 /kernel/misc/amd64/scsi
 0 /kernel/misc/amd64/hpcsvc
