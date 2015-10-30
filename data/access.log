@@ -1134,7 +1134,7 @@
 20567955 /usr/bin/curl
 20567964 /usr/bin/amd64/curl
 20567971 /usr/lib/amd64/libcurl.so.4
-20567971 /usr/lib/amd64/libcurl.so.4.3.0
+20567971 /usr/lib/amd64/libcurl.so.4.4.0
 20567973 /usr/lib/amd64/libidn.so.11
 20567974 /usr/lib/amd64/libidn.so.11.6.11
 20567979 /usr/lib/amd64/libssl.so.1.0.0
