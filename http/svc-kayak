@@ -126,6 +126,7 @@ if __name__ == '__main__':
             '/img': {'tools.staticdir.on': True,
                      'tools.staticdir.dir': os.path.join(options.basedir,'img')},
             '/kayak': {'tools.staticdir.on': True,
+                       'tools.staticdir.content_types': {'': 'text/plain'},
                        'tools.staticdir.dir': os.path.join(options.basedir,'kayak')}}
     root = Root(options)
     root.kayaklog = KayakLog(options)
