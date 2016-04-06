@@ -74,7 +74,7 @@ else
   else
     entire_version=${name//r/}
   fi
-  pkg -R $MP install entire@11-0.$entire_version || fail "install entire"
+  pkg -R $MP install entire@11-0.$entire_version openssh-server || fail "install entire"
   zfs snapshot $ZROOT/$name@entire
 fi
 
