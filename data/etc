@@ -34,7 +34,6 @@
 0 /etc/rcm
 0 /etc/rcm/scripts
 0 /etc/rc2.d
-0 /etc/rc2.d/S73cachefs.daemon
 0 /etc/rc2.d/S20sysetup
 0 /etc/rc2.d/README
 0 /etc/rc2.d/S89PRESERVE
@@ -776,7 +775,6 @@
 0 /etc/init.d/ufs_quota
 0 /etc/init.d/README
 0 /etc/init.d/ldap.client
-0 /etc/init.d/cachefs.daemon
 0 /etc/init.d/sysetup
 0 /etc/init.d/devlinks
 0 /etc/init.d/PRESERVE
