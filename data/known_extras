@@ -49,10 +49,10 @@
 0 /usr/bin/pfiles
 0 /usr/bin/vi
 0 /usr/bin/vim
-0 /usr/lib/libncurses.so.5
-0 /usr/lib/libncurses.so.5.9
-0 /usr/lib/amd64/libncurses.so.5
-0 /usr/lib/amd64/libncurses.so.5.9
+0 /usr/lib/libncurses.so.6
+0 /usr/lib/libncurses.so.6.0
+0 /usr/lib/amd64/libncurses.so.6
+0 /usr/lib/amd64/libncurses.so.6.0
 0 /usr/lib/lddstub
 0 /usr/lib/libidn.so.11
 0 /usr/lib/libidn.so.11.6.13
