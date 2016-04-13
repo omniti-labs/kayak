@@ -110,6 +110,7 @@
 20501274 /etc/default
 20501274 /etc/default/init
 20501274 /system
+20501274 /system/boot
 20501274 /system/contract
 20501275 /lib/libcontract.so.1
 20501275 /lib/amd64/libcontract.so.1
@@ -282,6 +283,9 @@
 20505714 /usr/lib/libxml2.so.2.9.1
 20505714 /usr/lib/amd64/libxml2.so.2
 20505714 /usr/lib/amd64/libxml2.so.2.9.1
+20505720 /lib/libz.so
+20505720 /lib/libz.so.1
+20505720 /lib/libz.so.1.2.8
 20505720 /usr/lib/libz.so
 20505720 /usr/lib/libz.so.1
 20505720 /usr/lib/libz.so.1.2.8
