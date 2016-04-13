@@ -55,9 +55,9 @@
 0 /usr/lib/amd64/libncurses.so.6.0
 0 /usr/lib/lddstub
 0 /usr/lib/libidn.so.11
-0 /usr/lib/libidn.so.11.6.13
+0 /usr/lib/libidn.so.11.6.15
 0 /usr/lib/amd64/libidn.so.11
-0 /usr/lib/amd64/libidn.so.11.6.13
+0 /usr/lib/amd64/libidn.so.11.6.15
 0 /usr/bin/ldd
 0 /usr/bin/i86/truss
 0 /usr/bin/truss
