@@ -583,7 +583,7 @@
 0 /kernel/fs/amd64/tmpfs
 0 /kernel/fs/amd64/hsfs
 0 /kernel/fs/amd64/lofs
-0 /kernel/fs/amd64/cachefs
+0 /kernel/fs/amd64/bootfs
 0 /kernel/fs/amd64/ufs
 0 /kernel/fs/amd64/specfs
 0 /kernel/fs/amd64/dcfs
