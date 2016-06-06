@@ -330,6 +330,8 @@
 0 /kernel/drv/amd64/ip6
 0 /kernel/drv/amd64/oce
 0 /kernel/drv/amd64/ixgbe
+0 /kernel/drv/amd64/sfxge
+0 /kernel/drv/amd64/vmxnet3s
 0 /kernel/drv/amd64/mega_sas
 0 /kernel/drv/amd64/cpunex
 0 /kernel/drv/amd64/pmcs
