@@ -136,6 +136,7 @@ DEBUG_PKGS="developer/debug/mdb system/dtrace developer/dtrace"
 DRIVERS="driver/audio driver/crypto/dca driver/crypto/tpm driver/firewire
 	driver/graphics/agpgart driver/graphics/atiatom driver/graphics/drm
 	driver/i86pc/fipe driver/i86pc/ioat driver/i86pc/platform
+	driver/misc/virtio
 	driver/network/afe driver/network/amd8111s driver/network/atge
 	driver/network/bfe driver/network/bge driver/network/bnx
 	driver/network/bnxe driver/network/bpf driver/network/chxge
@@ -147,6 +148,7 @@ DRIVERS="driver/audio driver/crypto/dca driver/crypto/tpm driver/firewire
 	driver/network/igb driver/network/iprb driver/network/ixgb
 	driver/network/ixgbe driver/network/mxfe driver/network/myri10ge
 	driver/network/nge driver/network/ntxn driver/network/nxge
+	driver/network/vmxnet3s driver/network/sfxge
 	driver/network/ofk driver/network/pcn driver/network/platform
 	driver/network/qlc driver/network/rds driver/network/rdsv3
 	driver/network/rge driver/network/rpcib driver/network/rtls

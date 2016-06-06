@@ -276,10 +276,10 @@
 20505710 /lib/amd64/libmd5.so.1
 20505710 /usr/lib/amd64/libmd.so
 20505710 /usr/lib/amd64/libmd.so.1
-20505714 /usr/lib/libxml2.so.2
-20505714 /usr/lib/libxml2.so.2.9.1
-20505714 /usr/lib/amd64/libxml2.so.2
-20505714 /usr/lib/amd64/libxml2.so.2.9.1
+20505714 /lib/libxml2.so.2
+20505714 /lib/libxml2.so.2.9.4
+20505714 /lib/amd64/libxml2.so.2
+20505714 /lib/amd64/libxml2.so.2.9.4
 20505720 /usr/lib/libz.so
 20505720 /usr/lib/libz.so.1
 20505720 /usr/lib/libz.so.1.2.8
