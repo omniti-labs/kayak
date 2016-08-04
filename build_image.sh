@@ -157,7 +157,7 @@ DRIVERS="driver/audio driver/crypto/dca driver/crypto/tpm driver/firewire
 	driver/network/igb driver/network/iprb driver/network/ixgb
 	driver/network/ixgbe driver/network/mxfe driver/network/myri10ge
 	driver/network/nge driver/network/ntxn driver/network/nxge
-	driver/network/vmxnet3s driver/network/sfxge
+	driver/network/vmxnet3s driver/network/sfxge driver/network/i40e
 	driver/network/ofk driver/network/pcn driver/network/platform
 	driver/network/qlc driver/network/rds driver/network/rdsv3
 	driver/network/rge driver/network/rpcib driver/network/rtls
