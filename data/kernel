@@ -333,6 +333,7 @@
 0 /kernel/drv/amd64/usbsacm
 0 /kernel/drv/amd64/ip6
 0 /kernel/drv/amd64/oce
+0 /kernel/drv/amd64/i40e
 0 /kernel/drv/amd64/ixgbe
 0 /kernel/drv/amd64/sfxge
 0 /kernel/drv/amd64/vmxnet3s
@@ -618,6 +619,7 @@
 0 /kernel/sys/amd64/kaio
 0 /kernel/misc/pci_autoconfig
 0 /kernel/misc/consconfig
+0 /kernel/drv/i40e.conf
 0 /kernel/drv/ixgbe.conf
 0 /kernel/drv/sdt.conf
 0 /kernel/drv/eibnx.conf
