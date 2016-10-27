@@ -414,6 +414,7 @@
 0 /kernel/drv/amd64/vioblk
 0 /kernel/drv/amd64/vioif
 0 /kernel/drv/amd64/nvme
+0 /kernel/drv/amd64/pvscsi
 0 /kernel/drv/cmdk.conf
 0 /kernel/drv/tavor.conf
 0 /kernel/drv/aggr.conf
