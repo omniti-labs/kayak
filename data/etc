@@ -711,6 +711,7 @@
 0 /etc/ftpd
 0 /etc/ftpd/ftpusers
 0 /etc/default
+0 /etc/default/be
 0 /etc/default/ipsec
 0 /etc/default/inetinit
 0 /etc/default/nss
