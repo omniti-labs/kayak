@@ -1,4 +1,5 @@
 0 /usr/sbin/reboot
+0 /usr/sbin/installboot
 0 /usr/bin/cp
 0 /usr/bin/mv
 0 /usr/bin/wc
