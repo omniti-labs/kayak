@@ -4,6 +4,10 @@ Using Kayak
 Building
 --------
 
+ * Set PKGURL to be the source of the OmniOS bits we wish to install with
+   kayak, in case it's not the default "omnios" publisher for whatever release
+   branch you have checked out.
+
  * zfs create rpool/kayak_image
  * gmake BUILDSEND=rpool/kayak_image
 
