@@ -181,7 +181,8 @@ DRIVERS="driver/audio driver/crypto/dca driver/crypto/tpm driver/firewire
 
 PARTS="release/name release/notices service/picl install/beadm SUNWcs SUNWcsd
 	library/libidn shell/pipe-viewer text/less editor/vim
-        developer/linker file/gnu-coreutils openssh openssh-server"
+        developer/linker file/gnu-coreutils openssh openssh-server
+	diagnostic/diskinfo"
 
 PKGS="$PARTS $SYSTEM $DRIVERS"
 

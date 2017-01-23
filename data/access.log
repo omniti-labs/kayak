@@ -1182,6 +1182,7 @@
 20568362 /usr/bin/xargs
 20568561 /usr/sbin/prtvtoc
 20568694 /usr/sbin/format
+20512555 /usr/bin/diskinfo
 20568708 /etc/format.dat
 20568710 /dev/rdsk/c0d1s0
 20568710 /dev/rdsk/c0d1s1
