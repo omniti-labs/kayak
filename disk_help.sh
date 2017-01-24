@@ -91,15 +91,6 @@ ListDisksUnique(){
     ListDisksAnd $term
   done | sort | uniq | xargs
 }
-SMIboot() {
-  DISK=$1
-  RDSK=/dev/rdsk/${DISK}p0
-  S2=/dev/rdsk/${DISK}s2
-  fdisk -B ${RDSK}
-  disks -C
-  prtvtoc -h ${RDSK} | awk '/./{p=0;} {if($1=="2"){size=$5;p=1;} if($1=="8"){start=$5;p=1;} if(p==1){print $1" "$2" "$3" "$4" "$5;}} END{size=size-start; print "0 2 00 "start" "size;}' | sort -n | fmthard -s /dev/stdin $S2
-  disks -C
-}
 
 BuildRpool() {
   ztype=""
@@ -109,18 +100,20 @@ BuildRpool() {
   if [[ -z "$disks" ]]; then
     bomb "No matching disks found to build rpool"
   fi
+  rm -f /tmp/kayak-disk-list
   for i in $disks
   do
-    SMIboot $i
     if [[ -n "$ztgt" ]]; then
       ztype="mirror"
     fi
-    ztgt="$ztgt ${i}s0"
-    INSTALL_GRUB_TGT="$INSTALL_GRUB_TGT /dev/rsdk/${i}s2"
+    ztgt="$ztgt ${i}"
+    # Keep track of disks for later...
+    echo ${i} >> /tmp/kayak-disk-list
   done
   log "zpool destroy rpool (just in case we've been run twice)"
   zpool destroy rpool 2> /dev/null
   log "Creating rpool with: zpool create -f rpool $ztype $ztgt"
+  # Just let "zpool create" do its thing. We want GPT disks now.
   zpool create -f rpool $ztype $ztgt || bomb "Failed to create rpool"
   BuildBE
 }

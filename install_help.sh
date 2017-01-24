@@ -150,24 +150,18 @@ FetchConfig(){
 
 MakeBootable(){
   log "Making boot environment bootable"
-  mkdir -p /rpool/boot/grub/bootsign || bomb "mkdir rpool/boot/grub failed"
-  touch /rpool/boot/grub/bootsign/pool_rpool || bomb "making bootsign failed"
-  chown -R root:root /rpool/boot || bomb "rpool/boot chown failed"
-  chmod 444 /rpool/boot/grub/bootsign/pool_rpool || bomb "chmod bootsign failed"
-  for f in capability menu.lst splash.xpm.gz ; do
-    cp -p $ALTROOT/boot/grub/$f /rpool/boot/grub/$f || \
-      bomb "setup rpool/boot/grub/$f failed"
+  zpool set bootfs=rpool/ROOT/omnios rpool
+  # Must do beadm activate first on the off chance we're bootstrapping from
+  # GRUB.
+  beadm activate omnios
+
+  # NOTE:  This installboot loop assumes we're doing GPT whole-disk rpools.
+  for i in `cat /tmp/kayak-disk-list`
+  do
+    installboot -mf /boot/pmbr /boot/gptzfsboot /dev/rdsk/${i}s0
   done
-  zpool set bootfs=rpool/ROOT/omnios rpool || bomb "setting bootfs failed"
-  beadm activate omnios || bomb "activating be failed"
-  $ALTROOT/boot/solaris/bin/update_grub -R $ALTROOT
+
   bootadm update-archive -R $ALTROOT
-  RELEASE=`head -1 $ALTROOT/etc/release | sed -e 's/ *//;'`
-  sed -i -e '/BOOTADM/,/BOOTADM/d' /rpool/boot/grub/menu.lst
-  sed -i -e "s/^title.*/title $RELEASE/;" /rpool/boot/grub/menu.lst
-  SendInstallLog
-  CopyInstallLog
-  beadm umount omnios
   return 0
 }
 
