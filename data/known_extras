@@ -35,6 +35,7 @@
 0 /usr/bin/svcs
 0 /usr/sbin/svccfg
 0 /usr/sbin/zstreamdump
+0 /usr/lib/utmpd
 0 /lib/libintl.so.1
 0 /usr/bin/less
 0 /usr/bin/more
