@@ -1477,3 +1477,7 @@
 20872055 /usr/lib/libsmbios.so.1
 20872055 /usr/lib/amd64/libsmbios.so
 20872055 /usr/lib/amd64/libsmbios.so.1
+20872055 /lib/libresolv.so.1
+20872055 /lib/libresolv.so.2
+20872055 /usr/lib/libresolv.so.1
+20872055 /usr/lib/libresolv.so.2
