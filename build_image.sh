@@ -191,7 +191,7 @@ if [ -n "$DEBUG" ]; then
 	BIGROOT=1
 fi
 CULL="perl python package/pkg snmp"
-RMRF="/var/pkg /usr/share/man /usr/lib/python2.6 /usr/lib/iconv"
+RMRF="/var/pkg /usr/share/man /usr/lib/python2.7 /usr/lib/iconv"
 
 ID=`id -u`
 if [[ "$ID" != "0" ]]; then

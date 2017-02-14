@@ -1294,9 +1294,9 @@
 0 /usr/bin/bzdiff
 0 /usr/bin/amd64/bzdiff
 0 /usr/bin/i386/bzdiff
-0 /usr/bin/python2.6-config
-0 /usr/bin/i386/python2.6-config
-0 /usr/bin/amd64/python2.6-config
+0 /usr/bin/python2.7-config
+0 /usr/bin/i386/python2.7-config
+0 /usr/bin/amd64/python2.7-config
 20707098 /usr/sbin/beadm
 20707121 /usr/lib/libbe.so.1
 20707186 /mnt

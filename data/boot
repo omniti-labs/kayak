@@ -7,6 +7,7 @@
 0 /boot/forth/beadm.4th
 0 /boot/forth/beastie.4th
 0 /boot/forth/brand-illumos.4th
+0 /boot/forth/brand-omnios.4th
 0 /boot/forth/brand.4th
 0 /boot/forth/check-password.4th
 0 /boot/forth/color.4th
@@ -17,6 +18,7 @@
 0 /boot/forth/logo-beastiebw.4th
 0 /boot/forth/logo-fbsdbw.4th
 0 /boot/forth/logo-illumos.4th
+0 /boot/forth/logo-omnios.4th
 0 /boot/forth/logo-orb.4th
 0 /boot/forth/logo-orbbw.4th
 0 /boot/forth/menu-commands.4th
