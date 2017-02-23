@@ -1,29 +1,20 @@
 #!/usr/bin/bash
+
 #
-# CDDL HEADER START
+# This file and its contents are supplied under the terms of the
+# Common Development and Distribution License ("CDDL"), version 1.0.
+# You may only use this file in accordance with the terms of version
+# 1.0 of the CDDL.
 #
-# The contents of this file are subject to the terms of the
-# Common Development and Distribution License, Version 1.0 only
-# (the "License").  You may not use this file except in compliance
-# with the License.
+# A full copy of the text of the CDDL should have accompanied this
+# source.  A copy of the CDDL is also available via the Internet at
+# http://www.illumos.org/license/CDDL.
 #
-# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
-# or http://www.opensolaris.org/os/licensing.
-# See the License for the specific language governing permissions
-# and limitations under the License.
+
 #
-# When distributing Covered Code, include this CDDL HEADER in each
-# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
-# If applicable, add the following below this CDDL HEADER, with the
-# fields enclosed by brackets "[]" replaced with your own identifying
-# information: Portions Copyright [yyyy] [name of copyright owner]
+# Copyright 2017 OmniTI Computer Consulting, Inc.  All rights reserved.
 #
-# CDDL HEADER END
-#
-#
-# Copyright 2012 OmniTI Computer Consulting, Inc.  All rights reserved.
-# Use is subject to license terms.
-#
+
 ListDisks() {
   declare -A disksize
   declare -A diskname
@@ -92,13 +83,13 @@ ListDisksUnique(){
   done | sort | uniq | xargs
 }
 
-BuildRpool() {
+BuildRpoolOnly() {
   ztype=""
   ztgt=""
   disks=`ListDisksUnique $*`
-  log "Disks being used for rpool: $disks"
+  log "Disks being used for root pool $RPOOL: $disks"
   if [[ -z "$disks" ]]; then
-    bomb "No matching disks found to build rpool"
+    bomb "No matching disks found to build root pool $RPOOL"
   fi
   rm -f /tmp/kayak-disk-list
   for i in $disks
@@ -110,11 +101,14 @@ BuildRpool() {
     # Keep track of disks for later...
     echo ${i} >> /tmp/kayak-disk-list
   done
-  log "zpool destroy rpool (just in case we've been run twice)"
-  zpool destroy rpool 2> /dev/null
-  log "Creating rpool with: zpool create -f rpool $ztype $ztgt"
+  log "zpool destroy $RPOOL (just in case we've been run twice)"
+  zpool destroy $RPOOL 2> /dev/null
+  log "Creating root pool with: zpool create -f $RPOOL $ztype $ztgt"
   # Just let "zpool create" do its thing. We want GPT disks now.
-  zpool create -f rpool $ztype $ztgt || bomb "Failed to create rpool"
+  zpool create -f $RPOOL $ztype $ztgt || bomb "Failed to create root pool $RPOOL"
+}
+BuildRpool() {
+  BuildRpoolOnly $*
   BuildBE
 }
 GetTargetVolSize() {
@@ -130,7 +124,7 @@ GetTargetVolSize() {
     echo $vsize
 }    
 GetRpoolFree() {
-    local zfsavail=`/sbin/zfs list -H -o avail rpool`
+    local zfsavail=`/sbin/zfs list -H -o avail $RPOOL` 
     if [[ ${zfsavail:(-1)} = "G" ]]; then
         local avail=`printf %0.f ${zfsavail::-1}`
     elif [[ ${zfsavail:(-1)} = "T" ]]; then
@@ -171,10 +165,10 @@ MakeSwapDump() {
     fi
 
     for volname in swap dump; do
-        /sbin/zfs create -V ${finalsize}G rpool/$volname || \
-            bomb "Failed to create rpool/$volname"
+        /sbin/zfs create -V ${finalsize}G $RPOOL/$volname || \
+            bomb "Failed to create $RPOOL/$volname"
     done
-    printf "/dev/zvol/dsk/rpool/swap\t-\t-\tswap\t-\tno\t-\n" >> $ALTROOT/etc/vfstab
-    Postboot /usr/sbin/dumpadm $savecore -d /dev/zvol/dsk/rpool/dump
+    printf "/dev/zvol/dsk/$RPOOL/swap\t-\t-\tswap\t-\tno\t-\n" >> $ALTROOT/etc/vfstab
+    Postboot /usr/sbin/dumpadm $savecore -d /dev/zvol/dsk/$RPOOL/dump
     return 0
 }

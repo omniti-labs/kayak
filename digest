@@ -1,0 +1,36 @@
+#!/bin/bash
+
+#
+# This file and its contents are supplied under the terms of the
+# Common Development and Distribution License ("CDDL"), version 1.0.
+# You may only use this file in accordance with the terms of version
+# 1.0 of the CDDL.
+#
+# A full copy of the text of the CDDL should have accompanied this
+# source.  A copy of the CDDL is also available via the Internet at
+# http://www.illumos.org/license/CDDL.
+#
+
+#
+# Copyright 2017 OmniTI Computer Consulting, Inc.  All rights reserved.
+#
+
+# Gross hack to create a version of /usr/bin/digest that doesn't need
+# to have all of the crypto framework libraries. sha1sum is available,
+# and we can use it.  This is needed for bootadm(1M).
+
+# FOR NOW, assume we're only ever going to be invoked by create_ramdisk,
+# which uses "digest -a sha1 <one-filename>".
+
+usage() {
+    echo "Usage:" > /dev/stderr
+    echo "  digest -l | [-v] -a <algorithm> [file...]" > /dev/stderr
+    exit 2
+}
+
+if [[ $1 != "-a" || $2 != "sha1" ]]; then
+    usage
+fi
+
+sha1sum $3 | awk '{print $1}'
+exit 0

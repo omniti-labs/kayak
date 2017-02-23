@@ -1,29 +1,20 @@
 #!/usr/bin/bash
+
 #
-# CDDL HEADER START
+# This file and its contents are supplied under the terms of the
+# Common Development and Distribution License ("CDDL"), version 1.0.
+# You may only use this file in accordance with the terms of version
+# 1.0 of the CDDL.
 #
-# The contents of this file are subject to the terms of the
-# Common Development and Distribution License, Version 1.0 only
-# (the "License").  You may not use this file except in compliance
-# with the License.
+# A full copy of the text of the CDDL should have accompanied this
+# source.  A copy of the CDDL is also available via the Internet at
+# http://www.illumos.org/license/CDDL.
 #
-# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
-# or http://www.opensolaris.org/os/licensing.
-# See the License for the specific language governing permissions
-# and limitations under the License.
+
 #
-# When distributing Covered Code, include this CDDL HEADER in each
-# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
-# If applicable, add the following below this CDDL HEADER, with the
-# fields enclosed by brackets "[]" replaced with your own identifying
-# information: Portions Copyright [yyyy] [name of copyright owner]
+# Copyright 2017 OmniTI Computer Consulting, Inc.  All rights reserved.
 #
-# CDDL HEADER END
-#
-#
-# Copyright 2012 OmniTI Computer Consulting, Inc.  All rights reserved.
-# Use is subject to license terms.
-#
+
 LOG_SETUP=0
 
 ConsoleLog(){
@@ -100,18 +91,30 @@ ForceDHCP(){
 }
 
 BuildBE() {
-  BOOTSRVA=`/sbin/dhcpinfo BootSrvA`
-  MEDIA=`getvar install_media`
-  MEDIA=`echo $MEDIA | sed -e "s%//\:%//$BOOTSRVA\:%g;"`
-  MEDIA=`echo $MEDIA | sed -e "s%///%//$BOOTSRVA/%g;"`
-  zfs set compression=on rpool
-  zfs create rpool/ROOT
-  zfs set canmount=off rpool/ROOT
-  zfs set mountpoint=legacy rpool/ROOT
+  RPOOL=${1:-rpool}
+  if [[ -z $2 ]]; then
+      BOOTSRVA=`/sbin/dhcpinfo BootSrvA`
+      MEDIA=`getvar install_media`
+      MEDIA=`echo $MEDIA | sed -e "s%//\:%//$BOOTSRVA\:%g;"`
+      MEDIA=`echo $MEDIA | sed -e "s%///%//$BOOTSRVA/%g;"`
+      DECOMP="bzip2 -dc"
+      GRAB="curl -s"
+  else
+      # ASSUME $2 is a file path.  TODO: Parse the URL...
+      MEDIA=$2
+      # TODO: make switch statement based on $MEDIA's extension.
+      # e.g. "bz2" ==> "bzip -dc", "7z" ==> 
+      DECOMP="bzip2 -dc"
+      GRAB=cat
+  fi
+  zfs set compression=on $RPOOL
+  zfs create $RPOOL/ROOT
+  zfs set canmount=off $RPOOL/ROOT
+  zfs set mountpoint=legacy $RPOOL/ROOT
   log "Receiving image: $MEDIA"
-  curl -s $MEDIA | pv -B 128m | bzip2 -dc | zfs receive -u rpool/ROOT/omnios
-  zfs set canmount=noauto rpool/ROOT/omnios
-  zfs set mountpoint=legacy rpool/ROOT/omnios
+  $GRAB $MEDIA | pv -B 128m -w 78 | $DECOMP | zfs receive -u $RPOOL/ROOT/omnios
+  zfs set canmount=noauto $RPOOL/ROOT/omnios
+  zfs set mountpoint=legacy $RPOOL/ROOT/omnios
   log "Cleaning up boot environment"
   beadm mount omnios /mnt
   ALTROOT=/mnt
@@ -122,7 +125,7 @@ BuildBE() {
   [[ -L $ALTROOT/dev/msglog ]] || \
     ln -s ../devices/pseudo/sysmsg@0:msglog $ALTROOT/dev/msglog
   MakeSwapDump
-  zfs destroy rpool/ROOT/omnios@kayak
+  zfs destroy $RPOOL/ROOT/omnios@kayak
 }
 
 FetchConfig(){
@@ -149,19 +152,28 @@ FetchConfig(){
 }
 
 MakeBootable(){
+  RPOOL=${1:-rpool}
   log "Making boot environment bootable"
-  zpool set bootfs=rpool/ROOT/omnios rpool
+  zpool set bootfs=$RPOOL/ROOT/omnios rpool
   # Must do beadm activate first on the off chance we're bootstrapping from
   # GRUB.
-  beadm activate omnios
+  beadm activate omnios || return 1
+
+  if [[ ! -z $1 ]]; then
+      # Generate kayak-disk-list from zpool status.
+      # NOTE: If this is something on non-s0 slices, the installboot below
+      # will fail most likely, which is possibly a desired result.
+      zpool list -v $RPOOL | egrep -v "NAME|rpool|mirror" | \
+	  awk '{print $1}' | sed -E 's/s0$//g' > /tmp/kayak-disk-list
+  fi
 
   # NOTE:  This installboot loop assumes we're doing GPT whole-disk rpools.
   for i in `cat /tmp/kayak-disk-list`
   do
-    installboot -mf /boot/pmbr /boot/gptzfsboot /dev/rdsk/${i}s0
+      installboot -mfF /boot/pmbr /boot/gptzfsboot /dev/rdsk/${i}s0 || return 1
   done
 
-  bootadm update-archive -R $ALTROOT
+  bootadm update-archive -R $ALTROOT || return 1
   return 0
 }
 
@@ -193,12 +205,55 @@ SetTimezone()
   sed -i -e "s:^TZ=.*:TZ=${1}:" $ALTROOT/etc/default/init
 }
 
+SetLang()
+{
+  log "Setting language: ${1}"
+  sed -i -e "s:^LANG=.*:LANG=${1}:" $ALTROOT/etc/default/init
+}
+
+SetKeyboardLayout()
+{
+      # Put the new keyboard layout ($1) in
+      # "setprop keyboard-layout <foo>" in the newly-installed root's
+      # /boot/solaris/bootenv.rc (aka. eeprom(1M) storage for amd64/i386).
+      layout=$1
+      sed "s/keyboard-layout Unknown/keyboard-layout $layout/g" \
+	  < $ALTROOT/boot/solaris/bootenv.rc > /tmp/bootenv.rc
+      mv /tmp/bootenv.rc $ALTROOT/boot/solaris/bootenv.rc
+      # Also modify the SMF manifest, assuming US-English was set by default.
+      sed "s/US-English/$layout/g" \
+	 < $ALTROOT/lib/svc/manifest/system/keymap.xml > /tmp/keymap.xml
+      cp -f /tmp/keymap.xml $ALTROOT/lib/svc/manifest/system/keymap.xml
+}
+
 ApplyChanges(){
   SetRootPW
   [[ -L $ALTROOT/etc/svc/profile/generic.xml ]] || \
     ln -s generic_limited_net.xml $ALTROOT/etc/svc/profile/generic.xml
   [[ -L $ALTROOT/etc/svc/profile/name_service.xml ]] || \
     ln -s ns_dns.xml $ALTROOT/etc/svc/profile/name_service.xml
+
+  # Extras from interactive ISO/USB install...
+  # arg1 == hostname
+  if [[ ! -z $1 ]]; then
+      SetHostname $1
+  fi
+
+  # arg2 == timezone
+  if [[ ! -z $2 ]]; then
+      SetTimezone $2
+  fi
+
+  # arg3 == Language
+  if [[ ! -z $3 ]]; then
+      SetLang $3
+  fi
+
+  # arg4 == Keyboard layout
+  if [[ ! -z $4 ]]; then
+      SetKeyboardLayout $4
+  fi
+
   return 0
 }
 
@@ -219,7 +274,9 @@ Reboot() {
 }
 
 RunInstall(){
-  FetchConfig || bomb "Could not fecth kayak config for target"
+  FetchConfig || bomb "Could not fetch kayak config for target"
+  # Set RPOOL if it wasn't done so already. We need it set.
+  RPOOL=${RPOOL:-rpool}
   . $ICFILE
   Postboot 'exit $SMF_EXIT_OK'
   ApplyChanges || bomb "Could not apply all configuration changes"

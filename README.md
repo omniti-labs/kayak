@@ -9,7 +9,33 @@ Building
    branch you have checked out.
 
  * zfs create rpool/kayak_image
- * gmake BUILDSEND=rpool/kayak_image
+ * gmake {PREBUILT_ILLUMOS=<path>} BUILDSEND=rpool/kayak_image <target>
+
+BUILDSEND must be specified.
+
+PREBUILT_ILLUMOS should point to an already-built illumos-omnios of the
+version you wish to construct an installer.  It is optional, but the build
+will warn you if you do not specify it. The build uses "svccfg-native" if
+possible to manipulate SMF on target images without conversing with the host
+machine's SMF services.
+
+<target> must be specified.
+
+install-http:
+	Builds the <VERSION>.zfs.bz2 file, which is what Kayak uses
+	for any install it does. Independent target.
+
+install-tftp:
+	Builds the miniroot.gz file, which is what PXE Kayak feeds to
+	GRUB or Loader to boot itself on a PXE boot. Independent target.
+
+install-iso:
+	Builds both install-{http,tftp} and then proceeds to construct
+	<VERSION>.iso using components from both.
+
+install-usb:
+	Builds install-iso, and then proceed to construct <VERSION>.usb-dd
+	based on the ISO image.
 
 Operation
 ---------
@@ -17,11 +43,11 @@ Operation
 DHCP server:
  * your server should be set to PXE boot
  * the DHCP server must return and IP, a nextserver and a bootfile
- * the boot file should be the file {{{/boot/grub/pxegrub}}} from an existing OmniOS system
+ * the boot file should be the file {{{/boot/grub/pxegrub}}} or {{{/boot/pxeboot}}} from an existing OmniOS system
 
 TFTP server:
- * menu.lst.01<macaddr_just_hex_caps> based on the template provided in this directory should be placed in /tftpboot/
- * /boot/grub/pxegrub should be placed in /tftpboot/
+ * menu.lst.01<macaddr_just_hex_caps> based on the template provided in this directory should be placed in /tftpboot/ if using grub, or put loader.conf.local in /tftpboot/boot
+ * /boot/grub/pxegrub or /boot/pxeboot should be placed in /tftpboot/
  * /platform/i86pc/kernel/amd64/unix should be placed in /tftpboot/omnios/kayak/
  * the miniroot.gz file should be placed in /tftpboot/omnios/kayak/
 

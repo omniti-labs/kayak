@@ -43,6 +43,11 @@
 0 /lib/libcrypto.so.1.0.0
 0 /usr/bin/ssh
 0 /usr/bin/scp
+0 /usr/bin/clear
+0 /usr/bin/tput
+0 /usr/bin/getent
+0 /usr/bin/kbd
+0 /usr/bin/loadkeys
 0 /usr/bin/mkfifo
 0 /usr/bin/dd
 0 /usr/bin/i86/ps

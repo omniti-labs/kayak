@@ -1,0 +1,24 @@
+# So we can tell loader the right things for a PXE boot of Kayak...
+
+# Our unix lives under boot...
+bootfile="/boot/platform/i86pc/kernel/amd64/unix"
+
+# We need some install boot arguments...
+# NOTE: "x.y.z.a" should be filled in with an actual IP address for the "kayak"
+# service host.
+boot-args="-B install_media=http://x.y.z.a/kayak/r151021-20170314.zfs.bz2,install_config=http://x.y.z.a/kayak"
+
+# Like the ISO, let people know we're in the PXE installer:
+loader_menu_title="Welcome to the OmniOS PXE Installer"
+autoboot_delay=1
+
+# Make sure we're maxed out on TFTP block size.
+tftp.blksize="1428"
+
+# Same with NFS if we use it. Optimize for NFS-in-UDP-in-PathMTU.
+nfs.read_size="1344"
+
+# Now the boot-archive in loader is different.  We don't need a .gz in
+# the filename because loader looks for <name>.gz.
+boot_archive_name="kayak/miniroot"
+boot_archive.hash_name="kayak/miniroot.gz.hash"

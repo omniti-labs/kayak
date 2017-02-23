@@ -203,6 +203,7 @@
 20502313 /kernel/drv/amd64/sysmsg
 20502320 /var/run
 20502325 /lib/libnvpair.so.1
+20502325 /lib/amd64/libnvpair.so.1
 20502328 /dev/console
 20502329 /kernel/drv/amd64/cn
 20502335 /lib/libnsl.so.1

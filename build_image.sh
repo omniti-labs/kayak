@@ -1,29 +1,20 @@
 #!/bin/bash
+
 #
-# CDDL HEADER START
+# This file and its contents are supplied under the terms of the
+# Common Development and Distribution License ("CDDL"), version 1.0.
+# You may only use this file in accordance with the terms of version
+# 1.0 of the CDDL.
 #
-# The contents of this file are subject to the terms of the
-# Common Development and Distribution License, Version 1.0 only
-# (the "License").  You may not use this file except in compliance
-# with the License.
+# A full copy of the text of the CDDL should have accompanied this
+# source.  A copy of the CDDL is also available via the Internet at
+# http://www.illumos.org/license/CDDL.
 #
-# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
-# or http://www.opensolaris.org/os/licensing.
-# See the License for the specific language governing permissions
-# and limitations under the License.
+
 #
-# When distributing Covered Code, include this CDDL HEADER in each
-# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
-# If applicable, add the following below this CDDL HEADER, with the
-# fields enclosed by brackets "[]" replaced with your own identifying
-# information: Portions Copyright [yyyy] [name of copyright owner]
+# Copyright 2017 OmniTI Computer Consulting, Inc.  All rights reserved.
 #
-# CDDL HEADER END
-#
-#
-# Copyright 2012 OmniTI Computer Consulting, Inc.  All rights reserved.
-# Use is subject to license terms.
-#
+
 fail() {
 	echo "ERROR: $*"
 	exit 1
@@ -56,7 +47,6 @@ if [[ ! -d $ROOTDIR ]]; then
 fi
 SVCCFG_DTD=${ROOTDIR}/usr/share/lib/xml/dtd/service_bundle.dtd.1
 SVCCFG_REPOSITORY=${ROOTDIR}/etc/svc/repository.db
-#SVCCFG=/usr/sbin/svccfg
 if [[ -f ${PREBUILT_ILLUMOS}/usr/src/cmd/svc/svccfg/svccfg-native ]]; then
 	SVCCFG=${PREBUILT_ILLUMOS}/usr/src/cmd/svc/svccfg/svccfg-native
 else
@@ -118,7 +108,7 @@ UNNEEDED_MANIFESTS="application/management/net-snmp.xml
 	system/stmf.xml system/fmd.xml system/utmp.xml
 	system/poold.xml system/dumpadm.xml"
 
-SYSTEM="system/boot/grub system/boot/real-mode system/boot/wanboot/internal
+SYSTEM="system/boot/real-mode system/boot/wanboot/internal
 	system/boot/loader system/boot/wanboot system/data/hardware-registry
 	system/data/keyboard/keytables system/data/terminfo
 	system/data/zoneinfo system/extended-system-utilities
@@ -180,7 +170,7 @@ DRIVERS="driver/audio driver/crypto/dca driver/crypto/tpm driver/firewire
 	driver/network/vioif driver/storage/nvme driver/storage/pvscsi"
 
 PARTS="release/name release/notices service/picl install/beadm SUNWcs SUNWcsd
-	library/libidn shell/pipe-viewer text/less editor/vim
+	library/libidn shell/pipe-viewer text/less editor/vim web/curl
         developer/linker file/gnu-coreutils openssh openssh-server
 	diagnostic/diskinfo"
 
@@ -350,6 +340,11 @@ step() {
 	mkdir $WORKDIR/mnt/kayak
 	cp $SRCDIR/*.sh $WORKDIR/mnt/kayak/
 	chmod a+x $WORKDIR/mnt/kayak/*.sh
+
+	# So "bootadm update-archive" can work.
+	cp $SRCDIR/digest $WORKDIR/mnt/usr/bin/digest
+	chmod 0755 $WORKDIR/mnt/usr/bin/digest
+
 	make_initial_boot $WORKDIR/mnt/.initialboot
 	if [[ -n "$DEBUG" ]]; then
 		cp $SRCDIR/anon.system $WORKDIR/mnt/etc/system
