@@ -164,7 +164,7 @@ DRIVERS="driver/audio driver/crypto/dca driver/crypto/tpm driver/firewire
 	driver/network/rge driver/network/rpcib driver/network/rtls
 	driver/network/sdp driver/network/sdpib driver/network/sfe
 	driver/network/tavor driver/network/usbecm driver/network/vr
-	driver/network/xge driver/network/yge driver/pcmcia driver/serial/pcser
+	driver/network/xge driver/network/yge driver/pcmcia
 	driver/serial/usbftdi driver/serial/usbsacm driver/serial/usbser
 	driver/serial/usbser_edge driver/serial/usbsksp
 	driver/serial/usbsksp/usbs49_fw driver/serial/usbsprl
@@ -173,7 +173,7 @@ DRIVERS="driver/audio driver/crypto/dca driver/crypto/tpm driver/firewire
 	driver/storage/bcm_sata driver/storage/blkdev driver/storage/cpqary3
 	driver/storage/glm driver/storage/lsimega driver/storage/marvell88sx
 	driver/storage/mega_sas driver/storage/mpt_sas driver/storage/mr_sas
-	driver/storage/nv_sata driver/storage/pcata driver/storage/pmcs
+	driver/storage/nv_sata driver/storage/pmcs
 	driver/storage/sbp2 driver/storage/scsa1394 driver/storage/sdcard
 	driver/storage/ses driver/storage/si3124 driver/storage/smp
 	driver/usb driver/usb/ugen driver/xvm/pv driver/storage/vioblk
