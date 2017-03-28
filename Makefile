@@ -25,6 +25,8 @@ INSTALLS=anon.dtrace.conf anon.system build_image.sh build_zfs_send.sh \
 	data/access.log data/boot data/etc data/filelist.ramdisk data/kernel \
 	data/known_extras data/mdb data/platform disk_help.sh install_help.sh \
 	install_image.sh takeover-console.c Makefile net_help.sh README.md \
+	build_iso.sh digest find-and-install.sh kayak-menu.sh usbgen.sh \
+	loader.conf.local rpool-install.sh \
 	sample/000000000000.sample sample/menu.lst.000000000000
 
 TFTP_FILES=$(DESTDIR)/tftpboot/boot/platform/i86pc/kernel/amd64/unix \
