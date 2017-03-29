@@ -85,9 +85,7 @@ EOF
 # Have initialboot muck with the console login service to make an interactive
 # installer get invoked.
 cat <<EOF > $MNT/.initialboot
-/usr/sbin/svccfg -s console-login:default setprop startd/need_session = boolean: true
-/usr/sbin/svcadm refresh console-login:default
-/usr/sbin/svcadm restart console-login:default
+echo "Get ready for the Kayak interactive installer."
 EOF
 cat <<EOF > $MNT/lib/svc/method/console-login
 #!/bin/bash
