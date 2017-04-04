@@ -1,29 +1,20 @@
 #!/bin/bash
 #
-# CDDL HEADER START
 #
-# The contents of this file are subject to the terms of the
-# Common Development and Distribution License, Version 1.0 only
-# (the "License").  You may not use this file except in compliance
-# with the License.
+# This file and its contents are supplied under the terms of the
+# Common Development and Distribution License ("CDDL"), version 1.0.
+# You may only use this file in accordance with the terms of version
+# 1.0 of the CDDL.
 #
-# You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
-# or http://www.opensolaris.org/os/licensing.
-# See the License for the specific language governing permissions
-# and limitations under the License.
+# A full copy of the text of the CDDL should have accompanied this
+# source.  A copy of the CDDL is also available via the Internet at
+# http://www.illumos.org/license/CDDL.
 #
-# When distributing Covered Code, include this CDDL HEADER in each
-# file and include the License file at usr/src/OPENSOLARIS.LICENSE.
-# If applicable, add the following below this CDDL HEADER, with the
-# fields enclosed by brackets "[]" replaced with your own identifying
-# information: Portions Copyright [yyyy] [name of copyright owner]
+
+
+# Copyright 2017 OmniTI Computer Consulting, Inc.  All rights reserved.
 #
-# CDDL HEADER END
-#
-#
-# Copyright 2012 OmniTI Computer Consulting, Inc.  All rights reserved.
-# Use is subject to license terms.
-#
+
 fail() {
   echo $*
   exit 1
@@ -32,8 +23,8 @@ fail() {
 # NOTE --> The URL needs to be updated with every release.  
 # Change "bloody" to whatever release the current branch is.
 PUBLISHER=omnios
-OMNIOS_URL=http://pkg.omniti.com/omnios/bloody
-: ${PKGURL:=http://pkg.omniti.com/omnios/bloody}
+OMNIOS_URL=https://pkg.omniti.com/omnios/bloody
+: ${PKGURL:=https://pkg.omniti.com/omnios/bloody}
 : ${BZIP2:=bzip2}
 ZROOT=rpool
 OUT=

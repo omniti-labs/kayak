@@ -1,4 +1,4 @@
-# See http://omnios.omniti.com/wiki.php/KayakClientOptions
+# See https://omnios.omniti.com/wiki.php/KayakClientOptions
 BuildRpool c0t0d0 c0t1d0
 SetHostname instalz
 SetTimezone UTC
