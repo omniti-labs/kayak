@@ -99,7 +99,7 @@ pkg -R $MP set-publisher -P --no-refresh -g $OMNIOS_URL omnios
 # NOTE:  Uncomment this line when you branch off a release.  "bloody" packages
 # are unsigned, but release ones are, and we should require checking their
 # signatures.
-#pkg -R $MP set-publisher --set-property signature-policy=require-signatures omnios
+pkg -R $MP set-publisher --set-property signature-policy=require-signatures omnios
 
 zfs snapshot $ZROOT/$name@kayak || fail "snap"
 zfs send $ZROOT/$name@kayak | $BZIP2 -9 > $OUT || fail "send/compress"
