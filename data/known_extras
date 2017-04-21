@@ -72,3 +72,8 @@
 0 /usr/bin/md5sum
 0 /usr/gnu/bin/sha1sum
 0 /usr/bin/sha1sum
+0 /usr/bin/gettext
+0 /usr/bin/locale
+0 /usr/bin/printf
+0 /usr/bin/tee
+0 /usr/bin/tzselect

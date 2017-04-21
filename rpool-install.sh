@@ -58,14 +58,9 @@ until [[ $NEWHOST == "" ]]; do
 done
 
 # Select a timezone.
-NEWTZ=$TZ
-until [[ $NEWTZ == "" ]]; do
-    TZ=$NEWTZ
-    echo "Current timezone is [$TZ]:  " `TZ=$TZ date`
-    echo "(NOTE: If time/date above looks wrong, the timezone name doesn't exist.)"
-    echo -n "Enter a new timezone, or just hit RETURN to accept [$TZ]: "
-    read NEWTZ
-done
+tzselect |& tee /tmp/tz.$$
+TZ=$(tail -1 /tmp/tz.$$)
+rm -f /tmp/tz.$$
 
 # Because of kayak's small miniroot, just use C as the language for now.
 LANG=C
