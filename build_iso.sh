@@ -82,19 +82,18 @@ cat <<EOF > $MNT/root/.bashrc
 export PATH=/usr/bin:/usr/sbin:/sbin
 export HOME=/root
 EOF
-# Have initialboot muck with the console login service to make an interactive
-# installer get invoked.
+# Have initialboot make an interactive installer get invoked.
 cat <<EOF > $MNT/.initialboot
-echo "Get ready for the Kayak interactive installer."
+# Adjust initial-boot's start timeout so the installer has plenty of time
+# to interact and work.  An hour (3600 secs) seems okay.
+if [[ \`svcprop -p start/timeout_seconds initial-boot\` != 3600 ]]; then
+	svccfg -s system/initial-boot setprop "start/timeout_seconds=3600"
+	svcadm refresh system/initial-boot
+	. /.initialboot
+else
+	/kayak/takeover-console /kayak/kayak-menu.sh
+fi
 EOF
-cat <<EOF > $MNT/lib/svc/method/console-login
-#!/bin/bash
-
-# CHEESY way to get the kayak-menu running w/o interference.
-export TERM=sun-color
-/kayak/takeover-console /kayak/kayak-menu.sh
-EOF
-chmod 0755 $MNT/lib/svc/method/console-login
 
 # Refresh the devices on the miniroot.
 devfsadm -r $MNT
