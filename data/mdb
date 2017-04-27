@@ -35,6 +35,7 @@
 0 /kernel/kmdb/amd64/sppp
 0 /kernel/kmdb/amd64/ufs
 0 /kernel/kmdb/amd64/uhci
+0 /kernel/kmdb/amd64/xhci
 0 /kernel/kmdb/amd64/usba
 0 /kernel/kmdb/arp
 0 /kernel/kmdb/cpc
@@ -70,6 +71,7 @@
 0 /kernel/kmdb/sppp
 0 /kernel/kmdb/ufs
 0 /kernel/kmdb/uhci
+0 /kernel/kmdb/xhci
 0 /kernel/kmdb/usba
 0 /platform
 0 /platform/i86pc
@@ -146,6 +148,7 @@
 0 /usr/lib/mdb/kvm/amd64/sppp.so
 0 /usr/lib/mdb/kvm/amd64/ufs.so
 0 /usr/lib/mdb/kvm/amd64/uhci.so
+0 /usr/lib/mdb/kvm/amd64/xhci.so
 0 /usr/lib/mdb/kvm/amd64/usba.so
 0 /usr/lib/mdb/kvm/arp.so
 0 /usr/lib/mdb/kvm/cpc.so
@@ -182,6 +185,7 @@
 0 /usr/lib/mdb/kvm/sppp.so
 0 /usr/lib/mdb/kvm/ufs.so
 0 /usr/lib/mdb/kvm/uhci.so
+0 /usr/lib/mdb/kvm/xhci.so
 0 /usr/lib/mdb/kvm/usba.so
 0 /usr/lib/mdb/proc
 0 /usr/lib/mdb/proc/amd64
